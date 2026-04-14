@@ -1,0 +1,3197 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>TV Slides - Projetos e Próximos Inícios</title>
+<style>
+  :root {
+    --bg1: #07111f;
+    --bg2: #0f1f39;
+    --panel: rgba(15, 24, 45, 0.88);
+    --panel-2: rgba(20, 32, 58, 0.95);
+    --line: rgba(255,255,255,0.08);
+    --text: #eef4ff;
+    --muted: #9eb1d7;
+    --accent: #57a4ff;
+    --accent2: #8a7dff;
+    --ok: #3ddc97;
+    --warn: #f4c75b;
+    --danger: #ff6b6b;
+    --shadow: 0 24px 70px rgba(0,0,0,.35);
+  }
+  * { box-sizing: border-box; }
+  html, body { width:100%; height:100%; margin:0; overflow:hidden; background: radial-gradient(circle at top left, #183460 0%, var(--bg1) 36%, #050b15 100%); color:var(--text); font-family: Inter, Segoe UI, Arial, sans-serif; }
+  .tv {
+    width:100vw; height:100vh; position:relative; overflow:hidden;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(87,164,255,.16), transparent 28%),
+      radial-gradient(circle at 85% 10%, rgba(138,125,255,.14), transparent 24%);
+  }
+  .topbar {
+    position:absolute; left:24px; right:24px; top:18px; z-index:40;
+    display:flex; align-items:center; justify-content:space-between; gap:16px;
+  }
+  .brand h1 { margin:0; font-size:clamp(24px, 2vw, 38px); letter-spacing:.2px; }
+  .brand p { margin:6px 0 0; color:var(--muted); font-size:14px; }
+  .chips { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
+  .chip {
+    padding:10px 14px; border-radius:999px; background:rgba(255,255,255,.06);
+    border:1px solid var(--line); color:var(--text); font-size:13px;
+    display:inline-flex; gap:8px; align-items:center; backdrop-filter: blur(10px);
+  }
+  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
+  .dot.blue { background:var(--accent); }
+  .dot.green { background:var(--ok); }
+  .dot.yellow { background:var(--warn); }
+  .slides {
+    width:100%; height:100%;
+    position:relative;
+  }
+  .slide {
+    position:absolute; inset:0;
+    padding:105px 28px 76px;
+    opacity:0; transform: translateX(40px) scale(.985);
+    transition: opacity .7s ease, transform .7s ease;
+    pointer-events:none;
+  }
+  .slide.active {
+    opacity:1; transform: translateX(0) scale(1); pointer-events:auto;
+  }
+  .slide-title {
+    display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
+    margin-bottom:18px;
+  }
+  .slide-title h2 { margin:0; font-size:clamp(30px, 2.7vw, 54px); line-height:1; }
+  .slide-title p { margin:8px 0 0; color:var(--muted); font-size:16px; }
+  .kpi-row {
+    display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:14px;
+  }
+  .kpi {
+    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    border-radius:24px;
+    padding:18px 20px;
+    box-shadow:var(--shadow);
+    backdrop-filter: blur(14px);
+  }
+  .kpi .label { color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
+  .kpi .value { margin-top:10px; font-weight:800; font-size:clamp(28px, 2.4vw, 44px); line-height:1; }
+  .kpi .sub { margin-top:8px; color:var(--muted); font-size:13px; }
+  .hero-grid {
+    display:grid; grid-template-columns:1.08fr .92fr; gap:16px; height:calc(100% - 132px);
+  }
+  .card {
+    background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
+    border:1px solid var(--line);
+    border-radius:28px;
+    box-shadow:var(--shadow);
+    backdrop-filter: blur(14px);
+    overflow:hidden;
+  }
+  .card-head {
+    padding:18px 22px 0;
+    display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
+  }
+  .card-head h3 { margin:0; font-size:22px; }
+  .card-head span { color:var(--muted); font-size:13px; }
+  .card-body { padding:18px 22px 22px; }
+  .hero {
+    height:100%; display:flex; flex-direction:column; justify-content:space-between;
+  }
+  .hero-main {
+    display:grid; grid-template-columns:1.1fr .9fr; gap:20px; align-items:stretch;
+  }
+  .hero-priority {
+    border-radius:24px; padding:24px;
+    background:
+      linear-gradient(135deg, rgba(87,164,255,.18), rgba(138,125,255,.12)),
+      rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    min-height:305px;
+  }
+  .hero-priority .eyebrow {
+    color:#dbe8ff; text-transform:uppercase; letter-spacing:.1em; font-size:12px; opacity:.85;
+  }
+  .hero-priority .days {
+    margin-top:14px; font-size:clamp(72px, 6vw, 118px); font-weight:900; line-height:.9;
+  }
+  .hero-priority .days small {
+    font-size:24px; font-weight:700; display:block; margin-top:10px;
+  }
+  .hero-priority .client {
+    margin-top:20px; font-size:30px; font-weight:800; line-height:1.08;
+  }
+  .hero-priority .product {
+    margin-top:10px; font-size:18px; color:#d2ddf5; line-height:1.35;
+  }
+  .hero-priority .meta {
+    margin-top:18px; display:flex; flex-wrap:wrap; gap:10px;
+  }
+  .tag {
+    padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);
+  }
+  .tag.ok { color:#d8ffed; background:rgba(61,220,151,.14); border-color:rgba(61,220,151,.2); }
+  .tag.warn { color:#fff0c2; background:rgba(244,199,91,.15); border-color:rgba(244,199,91,.2); }
+  .tag.danger { color:#ffd4d4; background:rgba(255,107,107,.15); border-color:rgba(255,107,107,.2); }
+  .alert-list { display:grid; gap:12px; }
+  .mini-alert {
+    padding:14px 16px; border-radius:18px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+  }
+  .mini-alert .top {
+    display:flex; justify-content:space-between; gap:10px; align-items:flex-start; margin-bottom:8px;
+  }
+  .mini-alert strong { display:block; font-size:16px; line-height:1.2; }
+  .mini-alert .small { color:var(--muted); font-size:13px; line-height:1.35; }
+  .mini-alert .badge {
+    padding:6px 9px; border-radius:999px; font-size:12px; font-weight:800; white-space:nowrap;
+  }
+  .mini-alert .badge.future { background:rgba(87,164,255,.14); color:#dcecff; border:1px solid rgba(87,164,255,.2); }
+  .mini-alert .badge.overdue { background:rgba(255,107,107,.16); color:#ffd4d4; border:1px solid rgba(255,107,107,.22); }
+  .mini-alert .badge.soon { background:rgba(244,199,91,.16); color:#fff0c2; border:1px solid rgba(244,199,91,.2); }
+  .split {
+    display:grid; grid-template-columns:1fr 1fr; gap:14px; height:calc(100% - 84px);
+  }
+  .stack { display:grid; gap:14px; }
+  .list-item {
+    display:grid; grid-template-columns:110px 1fr 110px; gap:14px; align-items:center;
+    padding:14px 16px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+  }
+  .date-box {
+    padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.05);
+    text-align:center;
+  }
+  .date-box strong { font-size:26px; display:block; line-height:1; }
+  .date-box span { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
+  .list-item .main strong { display:block; font-size:16px; margin-bottom:4px; }
+  .list-item .main .small { color:var(--muted); font-size:13px; line-height:1.35; }
+  .list-item .side { text-align:right; font-size:13px; color:var(--muted); }
+  .side strong { color:var(--text); font-size:22px; line-height:1; display:block; }
+  .metrics-grid {
+    display:grid; grid-template-columns:1.05fr .95fr; gap:14px; height:calc(100% - 84px);
+  }
+  .metrics-stack { display:grid; gap:14px; }
+  .metric-box {
+    padding:18px 18px 20px; border-radius:22px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
+  }
+  .metric-box .big { font-size:40px; font-weight:900; line-height:1; margin-top:10px; }
+  .meter {
+    width:100%; height:14px; border-radius:999px; overflow:hidden;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06); margin-top:12px;
+  }
+  .meter > div { height:100%; border-radius:inherit; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
+  .table-wrap {
+    height:100%; overflow:hidden; border-radius:22px;
+    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
+  }
+  table { width:100%; border-collapse:collapse; }
+  thead th {
+    padding:13px 14px; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.08em;
+    color:var(--muted); border-bottom:1px solid var(--line);
+  }
+  tbody td {
+    padding:14px; border-bottom:1px solid rgba(255,255,255,.06); font-size:14px; vertical-align:top;
+  }
+  tbody tr:last-child td { border-bottom:none; }
+  .bar-list { display:grid; gap:12px; }
+  .bar-item { display:grid; grid-template-columns:1fr 110px; gap:12px; align-items:center; }
+  .bar-top { display:flex; justify-content:space-between; gap:10px; color:var(--text); font-size:14px; margin-bottom:7px; }
+  .bar-track {
+    width:100%; height:13px; border-radius:999px; overflow:hidden;
+    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.05);
+  }
+  .bar-fill {
+    height:100%; border-radius:inherit; background:linear-gradient(90deg, rgba(87,164,255,.95), rgba(138,125,255,.95));
+  }
+  .bar-value { text-align:right; color:var(--muted); font-size:13px; font-weight:700; }
+  .bottom-ui {
+    position:absolute; left:28px; right:28px; bottom:18px; z-index:45;
+    display:flex; align-items:center; justify-content:space-between; gap:18px;
+  }
+  .progress {
+    flex:1; height:8px; border-radius:999px; overflow:hidden;
+    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.06);
+  }
+  .progress > div {
+    width:0%; height:100%; border-radius:inherit;
+    background:linear-gradient(90deg, var(--accent), var(--accent2));
+    transition: width .25s linear;
+  }
+  .dots { display:flex; gap:10px; }
+  .dots button {
+    width:12px; height:12px; border-radius:50%; border:none; padding:0;
+    background:rgba(255,255,255,.22); cursor:pointer;
+  }
+  .dots button.active { background:var(--accent); box-shadow:0 0 0 6px rgba(87,164,255,.12); }
+  .hint { color:var(--muted); font-size:13px; white-space:nowrap; }
+  .muted { color:var(--muted); }
+  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing:-.02em; }
+  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; height:calc(100% - 84px); }
+  .session-tag {
+    display:inline-block; padding:4px 10px; border-radius:999px; margin:2px 3px 2px 0;
+    background:rgba(87,164,255,.12); border:1px solid rgba(87,164,255,.22);
+    color:#dcecff; font-size:12px; font-weight:600;
+  }
+  .trein-grid {
+    display:grid; grid-template-columns:1.1fr .9fr; gap:16px; height:calc(100% - 84px);
+  }
+  .hero-trein {
+    border-radius:24px; padding:24px;
+    background: linear-gradient(135deg, rgba(87,164,255,.18), rgba(138,125,255,.12)), rgba(255,255,255,.03);
+    border:1px solid rgba(255,255,255,.08);
+    height:100%; display:flex; flex-direction:column; gap:14px;
+  }
+  .hero-trein .eyebrow { color:#dbe8ff; text-transform:uppercase; letter-spacing:.1em; font-size:12px; opacity:.85; }
+  .hero-trein .dias { font-size:clamp(64px, 5.5vw, 104px); font-weight:900; line-height:.9; }
+  .hero-trein .dias small { font-size:20px; font-weight:700; display:block; margin-top:8px; color:var(--muted); }
+  .hero-trein .cli { font-size:clamp(22px, 1.8vw, 32px); font-weight:800; line-height:1.1; }
+  .hero-trein .prod { font-size:17px; color:#d2ddf5; line-height:1.35; }
+  .hero-trein .sess-lbl { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; }
+</style>
+</head>
+<body>
+<div class="tv">
+  <div class="topbar">
+    <div class="brand">
+      <h1>TV · Projetos e próximos inícios</h1>
+      <p>Painel em modo slide automático, feito para deixar rodando sozinho na TV.</p>
+    </div>
+    <div class="chips">
+      <div class="chip"><span class="dot blue"></span><span id="modeBadge">Carregando base</span></div>
+      <div class="chip"><span class="dot green"></span><span id="fileInfo">-</span></div>
+      <div class="chip"><span class="dot yellow"></span><span id="generatedAt">-</span></div>
+      <div class="chip"><span id="clockNow">-</span></div>
+    </div>
+  </div>
+
+  <div class="slides">
+    <section class="slide active" id="slide0">
+      <div class="slide-title">
+        <div>
+          <h2>O que está mais perto de começar</h2>
+          <p>Visão rápida para bater o olho e já entender próximos projetos, atrasos e início previsto.</p>
+        </div>
+      </div>
+      <div class="kpi-row" id="startKpis"></div>
+      <div class="hero-grid">
+        <article class="card hero">
+          <div class="card-head">
+            <div>
+              <h3>Projeto prioridade máxima</h3>
+              <span>o início mais próximo dentro das previsões</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="hero-main">
+              <div class="hero-priority" id="priorityHero"></div>
+              <div>
+                <div class="alert-list" id="miniAlerts"></div>
+              </div>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h3>Radar de início</h3>
+              <span>top projetos previstos para começar</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert-list" id="startRadar"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slideTrein">
+      <div class="slide-title">
+        <div>
+          <h2>Próximos Treinamentos</h2>
+          <p>Sessões confirmadas, datas previstas e instrutor por projeto.</p>
+        </div>
+      </div>
+      <div class="trein-grid">
+        <article class="card" style="display:flex;flex-direction:column;">
+          <div class="card-head">
+            <div>
+              <h3>Prioridade máxima</h3>
+              <span>treinamento com início mais próximo</span>
+            </div>
+          </div>
+          <div class="card-body" style="flex:1;">
+            <div class="hero-trein" id="treinHero"></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head">
+            <div>
+              <h3>Fila de treinamentos</h3>
+              <span>previsão de início · sessões e datas</span>
+            </div>
+          </div>
+          <div class="card-body">
+            <div class="alert-list" id="treinList"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide1">
+      <div class="slide-title">
+        <div>
+          <h2>Agenda operacional</h2>
+          <p>Projetos em andamento, próximos términos e próximos inícios em uma leitura simples.</p>
+        </div>
+      </div>
+      <div class="split">
+        <article class="card">
+          <div class="card-head"><div><h3>Em andamento · prazos próximos</h3><span>prioridade por término</span></div></div>
+          <div class="card-body"><div class="stack" id="activeList"></div></div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Previsão · fila de início</h3><span>ordenado por data de início</span></div></div>
+          <div class="card-body"><div class="stack" id="forecastList"></div></div>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide2">
+      <div class="slide-title">
+        <div>
+          <h2>Envios e materiais</h2>
+          <p>Livros, kits e certificados para apoiar a operação e evitar correria.</p>
+        </div>
+      </div>
+      <div class="metrics-grid">
+        <article class="card">
+          <div class="card-head"><div><h3>Resumo de materiais</h3><span>soma do que está previsto na planilha</span></div></div>
+          <div class="card-body">
+            <div class="metrics-stack" id="materialCards"></div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Projetos com maior demanda</h3><span>itens previstos e valor total</span></div></div>
+          <div class="card-body">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Projeto</th>
+                    <th>Janela</th>
+                    <th>Itens</th>
+                    <th>Total</th>
+                  </tr>
+                </thead>
+                <tbody id="materialsTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section class="slide" id="slide3">
+      <div class="slide-title">
+        <div>
+          <h2>Resumo executivo</h2>
+          <p>Status da carteira, maiores propostas e distribuição operacional.</p>
+        </div>
+      </div>
+      <div class="two-col">
+        <article class="card">
+          <div class="card-head"><div><h3>Status e comercial</h3><span>resumo rápido da carteira</span></div></div>
+          <div class="card-body">
+            <div class="kpi-row" id="execKpis" style="grid-template-columns:repeat(3, minmax(0,1fr)); margin-bottom:14px;"></div>
+            <div class="table-wrap" style="height:calc(100% - 158px);">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Proposta</th>
+                    <th>Cliente</th>
+                    <th>Status</th>
+                    <th>Valor</th>
+                  </tr>
+                </thead>
+                <tbody id="valueTable"></tbody>
+              </table>
+            </div>
+          </div>
+        </article>
+        <article class="card">
+          <div class="card-head"><div><h3>Distribuição</h3><span>gestores, UFs e produtos</span></div></div>
+          <div class="card-body">
+            <div class="bar-list" id="gpBars" style="margin-bottom:16px;"></div>
+            <div class="bar-list" id="ufBars" style="margin-bottom:16px;"></div>
+            <div class="bar-list" id="productBars"></div>
+          </div>
+        </article>
+      </div>
+    </section>
+  </div>
+
+  <div class="bottom-ui">
+    <div class="progress"><div id="progressFill"></div></div>
+    <div class="dots" id="dots"></div>
+    <div class="hint">Troca automática · 12s por slide</div>
+  </div>
+</div>
+
+<script>
+const EMBEDDED_DATA = {
+  "source_file": "Andamento - Projetos.xlsx",
+  "source_sheet": "filtrada",
+  "generated_at": "2026-03-12T15:16:09+00:00",
+  "row_count": 33,
+  "records": [
+    {
+      "Proposta": "0404/25 TNP E",
+      "Cliente": "Prefeitura Municipal de Jaboatão dos Guararapes",
+      "Nome fantasia": "Prefeitura Municipal de Jaboatão dos Guararapes",
+      "Municipio": "Jaboatão dos Guararapes",
+      "UF": "PE",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Amarela",
+      "Data Real": null,
+      "Início": "2025-12-08",
+      "Término": "2026-12-07",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 5030,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": null,
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-12-08",
+      "Data término previsto": "2026-12-07",
+      "Aprovação da venda": "2025-12-01",
+      "Liberação pelo comercial": "2025-12-16",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 2",
+      "Faturamento porte da empresa": "entre 200 e 500 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 50,
+      "Valor Total Livro": 1750,
+      "Quantidade Kits": 50,
+      "Valor Kits": 40,
+      "Valor Total Kits": 2000,
+      "Quantidade Certificado": 50,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 250,
+      "Frete": null,
+      "Valor Total": 4000,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0542/25 TAP E",
+      "Cliente": "Município de Recife",
+      "Nome fantasia": "Prefeitura Municipal de Recife",
+      "Municipio": "Recife",
+      "UF": "PE",
+      "País": "Brasil",
+      "Produto": "Treinamento - PFG básico/introdutório",
+      "Data Real": null,
+      "Início": "2025-10-01",
+      "Término": "2026-06-30",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 5220,
+      "Nome Projeto": null,
+      "Observação": "Consultoria - 0583/24 PAP A - Considerar versão 08._x000D_\nEscola - 0542/25 TAP E - Considerar versão 01._x000D_\nIGMA Tech - 0046/25 SAP T - Considerar versão 02._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Roberto Heleno de Oliveira Junior",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Roberto Heleno de Oliveira Junior",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-10-01",
+      "Data término previsto": "2026-06-30",
+      "Aprovação da venda": "2025-10-13",
+      "Liberação pelo comercial": "2025-10-13",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0295/24 PAP",
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "Roberto Heleno de Oliveira Junior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 70,
+      "Valor Total Livro": 2450,
+      "Quantidade Kits": 70,
+      "Valor Kits": 40,
+      "Valor Total Kits": 2800,
+      "Quantidade Certificado": 70,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 350,
+      "Frete": null,
+      "Valor Total": 5600,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0592/25 TAN E",
+      "Cliente": "Biolab Sanus Farmaceutica Ltda",
+      "Nome fantasia": "Biolab Sanus Farmaceutica Ltda",
+      "Municipio": "Taboão da Serra",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial",
+      "Data Real": "1º - 09, 10 e 11/06;\n2º - 17, 18 e 19/08",
+      "Início": "2026-01-01",
+      "Término": "2026-09-01",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Previsão",
+      "Valor da proposta": 305000,
+      "Nome Projeto": "EXCELÊNCIA NA DISTRIBUIÇÃO BIOLAB_x000D_\n_x000D_",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Biolab",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": "Joao Felipe e mais um instrutor a definir",
+      "Coordenador": null,
+      "Responsável": "Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-01",
+      "Data término previsto": "2026-09-01",
+      "Aprovação da venda": "2025-11-19",
+      "Liberação pelo comercial": "2025-11-25",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": "0482/25 TNN",
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Médio",
+      "Descrição do porte do projeto": "maior que 300 mil e menor ou igual 1 milhão",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Farmacêutico",
+      "Segmento mercado terciário": "Laboratórios",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Roberto Heleno de Oliveira Junior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 80,
+      "Valor Total Livro": 2800,
+      "Quantidade Kits": 80,
+      "Valor Kits": 40,
+      "Valor Total Kits": 3200,
+      "Quantidade Certificado": 80,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 400,
+      "Frete": null,
+      "Valor Total": 6400,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0602/25 TAN E",
+      "Cliente": "Gav Resorts Gestão de Negócios e Participação Ltda",
+      "Nome fantasia": "Gav Resorts",
+      "Municipio": "Goiânia",
+      "UF": "GO",
+      "País": "Brasil",
+      "Produto": "Coaching",
+      "Data Real": null,
+      "Início": "2026-01-05",
+      "Término": "2026-05-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 100000,
+      "Nome Projeto": "DESENVOLVIMENTO EXECUTIVO - GILSON GRATÃO",
+      "Observação": "Venda: R$ 100.000,00._x000D_\n 1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: A 1ª parcela será faturada 05 dias após o início das atividades, com vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Erico Barros;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Início do projeto: Janeiro/2026;_x000D_\n7 - Duração do contrato: 05 meses;_x000D_\n8 - Taxas aplicadas: 25,11%",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "GAV Resorts",
+      "Parcelamento Linear": "S",
+      "Gerente": "Erico Costa Barros",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Erico Costa Barros",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-05",
+      "Data término previsto": "2026-05-31",
+      "Aprovação da venda": "2025-12-10",
+      "Liberação pelo comercial": "2025-12-12",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Hotelaria",
+      "Segmento mercado terciário": "Hotelaria",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Cláudia Mara Souza Stocco",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Expansão)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Centro-Oeste",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0548/25 TEN A",
+      "Cliente": "Companhia Nitro Quimica Brasileira",
+      "Nome fantasia": "Nitro Quimica",
+      "Municipio": "São Paulo",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Treinamento - SIGA",
+      "Data Real": null,
+      "Início": "2025-11-03",
+      "Término": "2026-02-28",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 32880,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Nitro Química",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-11-03",
+      "Data término previsto": "2026-02-28",
+      "Aprovação da venda": "2025-10-17",
+      "Liberação pelo comercial": "2025-10-17",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Químico e Petroquímico",
+      "Segmento mercado terciário": "Produtos Químicos",
+      "Acomp.GP": null,
+      "Total cash": "S",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Expansão",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0533/25 TAN E",
+      "Cliente": "Ouro Fino Saúde Animal Ltda",
+      "Nome fantasia": "Ouro Fino Saúde Animal módulo 1 de 3",
+      "Municipio": "Cravinhos",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial",
+      "Data Real": "11/03 a 13/03",
+      "Início": "2026-01-02",
+      "Término": "2027-01-02",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Previsão",
+      "Valor da proposta": 431000,
+      "Nome Projeto": "EXCELÊNCIA NA DISTRIBUIÇÃO OURO FINO",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "OuroFino Saúde Anima",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": "Rita, Rodrigo e Leonardo",
+      "Coordenador": null,
+      "Responsável": "Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-01-02",
+      "Data término previsto": "2027-01-02",
+      "Aprovação da venda": "2025-09-26",
+      "Liberação pelo comercial": "2025-10-02",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": "0558/24 TNN",
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Médio",
+      "Descrição do porte do projeto": "maior que 300 mil e menor ou igual 1 milhão",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Veterinária",
+      "Segmento mercado terciário": "Veterinária",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "19 - Analise Financeira/ 29 - PFG/ 15 - EXC. Comercial",
+      "Valor Livro": 38.8,
+      "Quantidade Livro": 63,
+      "Valor Total Livro": 2444.3999999999996,
+      "Quantidade Kits": 63,
+      "Valor Kits": 40,
+      "Valor Total Kits": 2520,
+      "Quantidade Certificado": 63,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 315,
+      "Frete": null,
+      "Valor Total": 5279.4,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0024/26 TNN E",
+      "Cliente": "Pet Society Produtos para Animais LTDA",
+      "Nome fantasia": "Pet Society Produtos para Animais módulo 1 de 2",
+      "Municipio": "Guarulhos",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial",
+      "Data Real": "18/03 a 20/03",
+      "Início": "2026-02-01",
+      "Término": "2026-10-01",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": null,
+      "Status": "Previsão",
+      "Valor da proposta": 120000,
+      "Nome Projeto": "Programa de Excelência Comercial - Pet Society_x000D_",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": null,
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": "Rita e Rodrigo",
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": null,
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": null,
+      "Data término previsto": null,
+      "Aprovação da venda": 46042,
+      "Liberação pelo comercial": 46044,
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": null,
+      "Faturamento porte da empresa": null,
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Comércio",
+      "Segmento mercado secundário": "Veterinária",
+      "Segmento mercado terciário": "Veterinária",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": null,
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 25,
+      "Valor Total Livro": 875,
+      "Quantidade Kits": null,
+      "Valor Kits": null,
+      "Valor Total Kits": 0,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": 0,
+      "Frete": null,
+      "Valor Total": 875,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0445/25 TNP E",
+      "Cliente": "Município de Guaxupé",
+      "Nome fantasia": "Prefeitura Municipal de Guaxupé",
+      "Municipio": "Guaxupé",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Treinamento - Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": "inicio em abril",
+      "Início": "2026-01-19",
+      "Término": "2027-01-18",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 45600,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Município de Guaxupé",
+      "Parcelamento Linear": "S",
+      "Gerente": "Paulo Henrique Valente de Moura Carvalho",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Paulo Henrique Valente de Moura Carvalho",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-19",
+      "Data término previsto": "2027-01-18",
+      "Aprovação da venda": "2026-01-02",
+      "Liberação pelo comercial": "2026-01-12",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "Cláudia Mara Souza Stocco",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 80,
+      "Valor Total Livro": 2800,
+      "Quantidade Kits": 80,
+      "Valor Kits": 40,
+      "Valor Total Kits": 3200,
+      "Quantidade Certificado": 80,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 400,
+      "Frete": null,
+      "Valor Total": 6400,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0036/26 TEN E",
+      "Cliente": "Biolab Sanus Farmaceutica Ltda",
+      "Nome fantasia": "Biolab Sanus Farmaceutica Ltda",
+      "Municipio": "Taboão da Serra",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Palestra - Gestão",
+      "Data Real": null,
+      "Início": "2026-03-01",
+      "Término": "2026-04-01",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": null,
+      "Status": "Previsão",
+      "Valor da proposta": 22400,
+      "Nome Projeto": "EXCELÊNCIA NA DISTRIBUIÇÃO BIOLAB_x000D_",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": null,
+      "Parcelamento Linear": "S",
+      "Gerente": null,
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": null,
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": null,
+      "Data término previsto": null,
+      "Aprovação da venda": "2026-01-28",
+      "Liberação pelo comercial": "2026-01-29",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Farmacêutico",
+      "Segmento mercado terciário": "Laboratórios",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": null,
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Expansão",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 39,
+      "Valor Total Livro": 1365,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0040/26 TNN E",
+      "Cliente": "Gr Water Solutions Coinvestimento S.A",
+      "Nome fantasia": "Gr Water Solutions Coinvestimento S.A",
+      "Municipio": "São Paulo",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Programa de Excelência na Gestão Pública",
+      "Data Real": null,
+      "Início": "2026-02-09",
+      "Término": "2027-02-08",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Previsão",
+      "Valor da proposta": 114840,
+      "Nome Projeto": null,
+      "Observação": "Venda: R$ 932.460,00  _x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Henrique Massa, Tiago Luiz e Kaiky Vieira;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Início do projeto: 02/2026;_x000D_\n7 - Duração do contrato: 12 meses;_x000D_\n8 - Taxas aplicadas: 58,6%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Gr Water Solutions C",
+      "Parcelamento Linear": "S",
+      "Gerente": "Henrique Massa Guimarães",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Henrique Massa Guimarães",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-02-09",
+      "Data término previsto": "2027-02-08",
+      "Aprovação da venda": "2026-02-03",
+      "Liberação pelo comercial": "2026-02-09",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 1",
+      "Faturamento porte da empresa": "entre 500 milhões e 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Água, Recursos Hídricos e Saneamento",
+      "Segmento mercado terciário": "Tratamento de Água e Distribuição",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 30,
+      "Valor Total Livro": 1050,
+      "Quantidade Kits": 30,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1200,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": 2250,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0609/25 TNN E",
+      "Cliente": "Axis Soluções de Engenharia LTDA",
+      "Nome fantasia": "Axis Engenharia",
+      "Municipio": "Porto Alegre",
+      "UF": "RS",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Marrom",
+      "Data Real": null,
+      "Início": "2026-02-23",
+      "Término": "2026-10-23",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": null,
+      "Status": "Previsão",
+      "Valor da proposta": 252000,
+      "Nome Projeto": "Programa Formação de  Gestores - Axis Engenharia",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": null,
+      "Parcelamento Linear": "S",
+      "Gerente": "Afonso Valle",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": null,
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": null,
+      "Data término previsto": null,
+      "Aprovação da venda": "2026-02-06",
+      "Liberação pelo comercial": "2026-02-09",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Pequena",
+      "Faturamento porte da empresa": "menor que 50 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Construção",
+      "Segmento mercado terciário": "Engenharia",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": null,
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sul",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 35,
+      "Valor Total Livro": 1225,
+      "Quantidade Kits": null,
+      "Valor Kits": null,
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": 1225,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0071/26 TNN E",
+      "Cliente": "Irmãos Soares Industria e Comercio de Calçados Ltda",
+      "Nome fantasia": "Lia Line",
+      "Municipio": "Nova Trento",
+      "UF": "SC",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2026-04-06",
+      "Término": "2027-01-06",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Previsão",
+      "Valor da proposta": 68670,
+      "Nome Projeto": "Lia Line Excelente",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Lia Line",
+      "Parcelamento Linear": "S",
+      "Gerente": "Leonardo Rischele Felisbino",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Leonardo Rischele Felisbino",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-04-06",
+      "Data término previsto": "2027-10-06",
+      "Aprovação da venda": "2026-03-06",
+      "Liberação pelo comercial": "2026-03-10",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": null,
+      "Faturamento porte da empresa": null,
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Vestuário",
+      "Segmento mercado terciário": "Calçados",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sul",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 45,
+      "Valor Total Livro": 1575,
+      "Quantidade Kits": 45,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1800,
+      "Quantidade Certificado": 45,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 240,
+      "Frete": null,
+      "Valor Total": 3615,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0581/25 TNN E",
+      "Cliente": "Nutrane Nutriçao Animal LTDA",
+      "Nome fantasia": "Nutrane",
+      "Municipio": "Pesqueira",
+      "UF": "PE",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2026-01-01",
+      "Término": "2026-10-01",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 8760,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Nutrane",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": null,
+      "Coordenador": "Rafael Pinheiro Percínio Silva",
+      "Responsável": "Rafael Pinheiro Percínio Silva/ Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-01",
+      "Data término previsto": "2026-10-01",
+      "Aprovação da venda": "2025-11-07",
+      "Liberação pelo comercial": "2025-11-26",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 1",
+      "Faturamento porte da empresa": "entre 500 milhões e 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Veterinária",
+      "Segmento mercado terciário": "Veterinária",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 25,
+      "Valor Total Livro": 875,
+      "Quantidade Kits": 25,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1000,
+      "Quantidade Certificado": 25,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 125,
+      "Frete": null,
+      "Valor Total": 2000,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0446/25 TNP E",
+      "Cliente": "Prefeitura Municipal de Betim",
+      "Nome fantasia": "Prefeitura Municipal de Betim",
+      "Municipio": "Betim",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-10-27",
+      "Término": "2026-10-26",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 16200,
+      "Nome Projeto": null,
+      "Observação": "Venda: R$ 2.760.000,00_x000D_\n  _x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 30 dias após o início das atividades e vencimento para 05 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Leonardo Rischele, Natália Godoy e Laura Pontes;_x000D_\n5 - Haverá logística;_x000D_\n6 - Duração do contrato: 12 meses;_x000D_\n7 - Data de início: 27/10/2025;_x000D_\n8 - Taxas aplicadas: resultante 58,1%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Leonardo Rischele Felisbino",
+      "Instrutor": null,
+      "Coordenador": "PAULO VALENTE",
+      "Responsável": "Leonardo Rischele Felisbino",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-10-27",
+      "Data término previsto": "2026-10-26",
+      "Aprovação da venda": "2025-10-07",
+      "Liberação pelo comercial": "2025-11-04",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Sem inf.",
+      "Faturamento porte da empresa": "ETHOS",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "Roberto Heleno de Oliveira Junior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 200,
+      "Valor Total Livro": 7000,
+      "Quantidade Kits": 200,
+      "Valor Kits": 40,
+      "Valor Total Kits": 8000,
+      "Quantidade Certificado": 200,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 1000,
+      "Frete": null,
+      "Valor Total": 16000,
+      "RESPOSTAS": "CONFIRMAR DATAS E MATERIAIS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0443/25 TAP E",
+      "Cliente": "Secretaria de Administração do Estado do Piauí - SEAD",
+      "Nome fantasia": "SEAD PIAUÍ",
+      "Municipio": "Teresina",
+      "UF": "PI",
+      "País": "Brasil",
+      "Produto": "Treinamento - Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-10-09",
+      "Término": "2026-10-08",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 12480,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Secretaria de Admini",
+      "Parcelamento Linear": "S",
+      "Gerente": "Leonardo Rischele Felisbino",
+      "Instrutor": null,
+      "Coordenador": "DAVI BARROS",
+      "Responsável": "Leonardo Rischele Felisbino",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-10-09",
+      "Data término previsto": "2026-10-08",
+      "Aprovação da venda": "2025-10-06",
+      "Liberação pelo comercial": "2025-10-09",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0168/25 PAP",
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Estadual",
+      "Segmento mercado terciário": "Estadual",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 100,
+      "Valor Total Livro": 3500,
+      "Quantidade Kits": 100,
+      "Valor Kits": 40,
+      "Valor Total Kits": 4000,
+      "Quantidade Certificado": 100,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 500,
+      "Frete": null,
+      "Valor Total": 8000,
+      "RESPOSTAS": "CONFIRMAR DATAS E MATERIAIS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0298/25 TNP E",
+      "Cliente": "Prefeitura Municipal de Aparecida de Goiânia",
+      "Nome fantasia": "Prefeitura Municipal de Aparecida de Goiânia",
+      "Municipio": "Aparecida de Goiânia",
+      "UF": "GO",
+      "País": "Brasil",
+      "Produto": "Treinamento - Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-09-01",
+      "Término": "2026-12-01",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 10560,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Leonardo Rischele Felisbino",
+      "Instrutor": null,
+      "Coordenador": "MUSA VARELA",
+      "Responsável": "Leonardo Rischele Felisbino",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-09-01",
+      "Data término previsto": "2026-12-01",
+      "Aprovação da venda": "2025-08-22",
+      "Liberação pelo comercial": "2025-10-02",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0182/25 EAP",
+      "Descrição porte da empresa": "Grande 1",
+      "Faturamento porte da empresa": "entre 500 milhões e 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Centro-Oeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 100,
+      "Valor Total Livro": 3500,
+      "Quantidade Kits": 100,
+      "Valor Kits": 40,
+      "Valor Total Kits": 4000,
+      "Quantidade Certificado": 100,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 500,
+      "Frete": null,
+      "Valor Total": 8000,
+      "RESPOSTAS": "CONFIRMAR DATAS E MATERIAIS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0524/25 TNN E",
+      "Cliente": "Cerâmica Brasileira Cerbras LTDA",
+      "Nome fantasia": "Cerbras",
+      "Municipio": "Maracanaú",
+      "UF": "CE",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial",
+      "Data Real": null,
+      "Início": "2026-01-13",
+      "Término": "2027-01-12",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 33600,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Cerbras",
+      "Parcelamento Linear": "S",
+      "Gerente": "Newton Alves da Rocha Júnior",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Newton Alves da Rocha Júnior",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-13",
+      "Data término previsto": "2027-01-12",
+      "Aprovação da venda": "2025-09-26",
+      "Liberação pelo comercial": "2025-09-30",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 1",
+      "Faturamento porte da empresa": "entre 500 milhões e 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Construção",
+      "Segmento mercado terciário": "Materiais de Construção",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 30,
+      "Valor Total Livro": 1050,
+      "Quantidade Kits": 30,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1200,
+      "Quantidade Certificado": 30,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 150,
+      "Frete": null,
+      "Valor Total": 2400,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0450/25 TNN E",
+      "Cliente": "Mercantil Nova Era Ltda",
+      "Nome fantasia": "Nova Era Supermercados de Manaus",
+      "Municipio": "Manaus",
+      "UF": "AM",
+      "País": "Brasil",
+      "Produto": "Comercial",
+      "Data Real": null,
+      "Início": "2025-09-01",
+      "Término": "2027-02-28",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 9180,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Nova Era Supermercad",
+      "Parcelamento Linear": "S",
+      "Gerente": "Newton Alves da Rocha Júnior",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Newton Alves da Rocha Júnior",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-09-01",
+      "Data término previsto": "2027-02-28",
+      "Aprovação da venda": "2025-08-13",
+      "Liberação pelo comercial": "2025-08-14",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Comércio",
+      "Segmento mercado secundário": "Comércio Varejista",
+      "Segmento mercado terciário": "Super e Hipermercados",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Norte",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 20,
+      "Valor Total Livro": 700,
+      "Quantidade Kits": 20,
+      "Valor Kits": 40,
+      "Valor Total Kits": 800,
+      "Quantidade Certificado": 20,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 100,
+      "Frete": null,
+      "Valor Total": 1600,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0287/25 TNP E",
+      "Cliente": "Prefeitura Municipal de Ipojuca",
+      "Nome fantasia": "Prefeitura Municipal de Ipojuca",
+      "Municipio": "Ipojuca",
+      "UF": "PE",
+      "País": "Brasil",
+      "Produto": "Treinamento - Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-08-12",
+      "Término": "2026-08-11",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 10440,
+      "Nome Projeto": "Implementação do Programa de Excelência na Prefeitura de Ipojuca - PE com foco na excelência financeira e fiscal, reorganização das secretarias e capacitação dos servidores",
+      "Observação": "Venda: R$ 2.472.000,00. _x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 30 dias após o início das atividades, com vencimento para 05 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsável pela venda: Bárbara Godoy, Leonardo Rischele e Afonso Valle;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Início do projeto: agosto/2025;_x000D_\n7 - Duração do contrato: 12 meses;_x000D_\n8 - Taxas aplicadas: 59,75% consultoria e 30% logística.",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Leonardo Rischele Felisbino",
+      "Instrutor": null,
+      "Coordenador": "BÁRBARA",
+      "Responsável": "Leonardo Rischele Felisbino",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-08-12",
+      "Data término previsto": "2026-08-11",
+      "Aprovação da venda": "2025-08-04",
+      "Liberação pelo comercial": "2025-08-08",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 100,
+      "Valor Total Livro": 3500,
+      "Quantidade Kits": 100,
+      "Valor Kits": 40,
+      "Valor Total Kits": 4000,
+      "Quantidade Certificado": 100,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 500,
+      "Frete": null,
+      "Valor Total": 8000,
+      "RESPOSTAS": "CONFIRMAR DATAS E MATERIAIS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0013/26 TNN E",
+      "Cliente": "Salaryfits Sistemas LTDA",
+      "Nome fantasia": "Salaryfits",
+      "Municipio": "Belo Horizonte",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial",
+      "Data Real": null,
+      "Início": "2026-01-12",
+      "Término": "2027-01-11",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Previsão",
+      "Valor da proposta": 9720,
+      "Nome Projeto": "_x000D_\n_x000D_\nIMPLEMENTANDO A EXCELÊNCIA COMERCIAL NA SALARY FITS_x000D_\nIMPLEMENTANDO A EXCELÊNCIA COMERCIAL NA SALARY FITS",
+      "Observação": "Venda: R$ 582.000,00._x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Rodrigo Neves e João Felipe Passos;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Duração do contrato: 12 meses;_x000D_\n7 - Data de início: 01/2026;_x000D_\n8 - Taxas aplicadas: 55,55%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Salaryfits",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-12",
+      "Data término previsto": "2027-01-11",
+      "Aprovação da venda": "2026-01-08",
+      "Liberação pelo comercial": "2026-01-09",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": null,
+      "Faturamento porte da empresa": null,
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Informática e Tecnologia da Informação",
+      "Segmento mercado terciário": "Provedores de Serviços de Internet, Portais Web, e Serviços de Processamento de Dados",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0034/26 PAN A",
+      "Cliente": "Serviço de Apoio as Micro e Pequ Empr de MS Sebrae MS",
+      "Nome fantasia": "SEBRAE MS",
+      "Municipio": "Campo Grande",
+      "UF": "MS",
+      "País": "Brasil",
+      "Produto": "Programa de Excelência na Gestão Pública",
+      "Data Real": null,
+      "Início": "2026-02-02",
+      "Término": "2026-12-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 620360,
+      "Nome Projeto": "Ciclo de Acompanhamento da Gestão Municipal – Sebrae MS_x000D_",
+      "Observação": "Venda: R$ 768.060,00_x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de Contas;_x000D_\n4 - Responsáveis pela venda: Rodrigo Zacharias Neves e Fernanda Céli de Almeida Marçal;_x000D_\n5 - Haverá logística;_x000D_\n6 - Duração do contrato: 09 meses;_x000D_\n7 - Data de inicio: 02/02/2026;_x000D_\n8 - Taxas aplicadas: consultoria 57%, logística 39,32%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Sebrae MS",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": null,
+      "Coordenador": "Danilo Soares de Lima",
+      "Responsável": "Danilo Soares de Lima/ Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Aquila",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-02-02",
+      "Data término previsto": "2026-12-31",
+      "Aprovação da venda": "2026-01-27",
+      "Liberação pelo comercial": "2026-01-28",
+      "Tipo da venda": "Projeto",
+      "Proposta origem da renovação": "0316/25 PNN",
+      "Descrição porte da empresa": "Pequena",
+      "Faturamento porte da empresa": "menor que 50 milhões",
+      "Porte do projeto": "Médio",
+      "Descrição do porte do projeto": "maior que 300 mil e menor ou igual 1 milhão",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Ensino",
+      "Segmento mercado terciário": "Profissionalizante/Tecnológico",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Centro-Oeste",
+      "Livro": "Cidades Excelentes",
+      "Valor Livro": 69.9,
+      "Quantidade Livro": 4,
+      "Valor Total Livro": 279.6,
+      "Quantidade Kits": null,
+      "Valor Kits": null,
+      "Valor Total Kits": 0,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": 0,
+      "Frete": null,
+      "Valor Total": 279.6,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0505/25 TNN E",
+      "Cliente": "Wew Importação e Exportação Ltda",
+      "Nome fantasia": "Wessel Culinaria e Carnes",
+      "Municipio": "Araçariguama",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial Básico",
+      "Data Real": null,
+      "Início": "2025-10-27",
+      "Término": "2026-10-26",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 2160,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Wessel Culinária e C",
+      "Parcelamento Linear": "S",
+      "Gerente": "Rodrigo Zacharias Neves",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Rodrigo Zacharias Neves",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-10-27",
+      "Data término previsto": "2026-10-26",
+      "Aprovação da venda": "2025-09-30",
+      "Liberação pelo comercial": "2025-10-02",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Alimentos",
+      "Segmento mercado terciário": "Produção de Alimentos",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 30,
+      "Valor Total Livro": 1050,
+      "Quantidade Kits": 30,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1200,
+      "Quantidade Certificado": 30,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 150,
+      "Frete": null,
+      "Valor Total": 2400,
+      "RESPOSTAS": "SEM PREVISÃO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0619/25 8NN A",
+      "Cliente": "O. Sulz de Almeida Neto LTDA",
+      "Nome fantasia": "Arezzo (Eunápolis)",
+      "Municipio": "Eunápolis",
+      "UF": "BA",
+      "País": "Brasil",
+      "Produto": "8 Passos da Excelência (Projeto)",
+      "Data Real": null,
+      "Início": "2026-01-19",
+      "Término": "2026-07-19",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 81360,
+      "Nome Projeto": "Plano de  Recuperação -  Lojas Arezzo_x000D_",
+      "Observação": "Venda: R$ 81.354,00._x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Anna Luiza Simões e Nayara de Andrade;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Duração do contrato: 06 meses;_x000D_\n7 - Data de início: 19/01/2026;_x000D_\n8 - Taxas aplicadas: 41%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Arezzo (Eunápolis)",
+      "Parcelamento Linear": "S",
+      "Gerente": "Anna Luiza Simões Santos Paganucci",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Anna Luiza Simões Santos Paganucci",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-19",
+      "Data término previsto": "2026-07-19",
+      "Aprovação da venda": "2026-01-07",
+      "Liberação pelo comercial": "2026-01-08",
+      "Tipo da venda": "8 Passos da Excelência PME",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": null,
+      "Faturamento porte da empresa": null,
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Comércio",
+      "Segmento mercado secundário": "Vestuário",
+      "Segmento mercado terciário": "Calçados",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Cláudia Mara Souza Stocco",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "SEM MATERIAIS EQUIPE DO PROJETO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0434/25 TNN E",
+      "Cliente": "Brasmoto Brasileiro Motos Ltda",
+      "Nome fantasia": "Brasmoto Honda (Eunápolis)",
+      "Municipio": "Eunápolis",
+      "UF": "BA",
+      "País": "Brasil",
+      "Produto": "Treinamento - Excelência Comercial Básico",
+      "Data Real": null,
+      "Início": "2025-09-01",
+      "Término": "2026-08-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 7080,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Brasmoto",
+      "Parcelamento Linear": "N",
+      "Gerente": "Igor Fernandes Della Croce",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Igor Fernandes Della Croce",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-09-01",
+      "Data término previsto": "2026-08-31",
+      "Aprovação da venda": "2025-08-19",
+      "Liberação pelo comercial": "2025-08-22",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 2",
+      "Faturamento porte da empresa": "entre 200 e 500 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Comércio",
+      "Segmento mercado secundário": "Automotivo",
+      "Segmento mercado terciário": "Motos",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Cláudia Mara Souza Stocco",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Nordeste",
+      "Livro": "EXC. Comercial",
+      "Valor Livro": 35,
+      "Quantidade Livro": 30,
+      "Valor Total Livro": 1050,
+      "Quantidade Kits": 30,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1200,
+      "Quantidade Certificado": 30,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 150,
+      "Frete": null,
+      "Valor Total": 2400,
+      "RESPOSTAS": "CONCLUIDO",
+      "DATA": "2025-11-01"
+    },
+    {
+      "Proposta": "0552/25 TNN E",
+      "Cliente": "Taua Resort Caeté Ltda",
+      "Nome fantasia": "Tauá Caeté",
+      "Municipio": "Caeté",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Amarela",
+      "Data Real": null,
+      "Início": "2025-12-03",
+      "Término": "2026-12-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 7990,
+      "Nome Projeto": "Programa Formação de Gestores",
+      "Observação": "Venda: R$7.998_x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Escola;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Treinamento: 8 horas_x000D_\n7-  Início: Imediato_x000D_\n8 - Taxas aplicadas: 55,2%_x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Taua",
+      "Parcelamento Linear": "S",
+      "Gerente": "Roberto Heleno de Oliveira Junior",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Roberto Heleno de Oliveira Junior",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-12-03",
+      "Data término previsto": "2025-12-31",
+      "Aprovação da venda": "2025-10-20",
+      "Liberação pelo comercial": "2025-10-20",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": null,
+      "Faturamento porte da empresa": null,
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Hotelaria",
+      "Segmento mercado terciário": "Hotelaria",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Roberto Heleno de Oliveira Junior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Bronze",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "CONCLUIDO",
+      "DATA": "2025-12-01"
+    },
+    {
+      "Proposta": "0020/26 TNN E AMAR",
+      "Cliente": "Irmandade da Santa Casa de Misericordia de Araraquara",
+      "Nome fantasia": "Santa Casa de Misericórdia de Araraquara",
+      "Municipio": "Araraquara",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2026-02-05",
+      "Término": "2026-03-05",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": null,
+      "Status": "Previsão",
+      "Valor da proposta": 29930,
+      "Nome Projeto": "Programa Formação de Gestores Faixa Branca e Faixa Amarela – Santa Casa Araquara",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": null,
+      "Parcelamento Linear": "S",
+      "Gerente": "Thiago de Almeida Brandão e Souza",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": null,
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": null,
+      "Data término previsto": null,
+      "Aprovação da venda": "2026-01-14",
+      "Liberação pelo comercial": "2026-01-14",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Médico Hospitalar",
+      "Segmento mercado terciário": "Hospitais",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": null,
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": null,
+      "Valor Livro": null,
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": null,
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "MATERIAIS ENVIADOS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0020/26 TNN E BRA",
+      "Cliente": "Irmandade da Santa Casa de Misericordia de Araraquara",
+      "Nome fantasia": "Santa Casa de Misericórdia de Araraquara",
+      "Municipio": "Araraquara",
+      "UF": "SP",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2026-02-05",
+      "Término": "2026-03-05",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": null,
+      "Status": "Previsão",
+      "Valor da proposta": 18650,
+      "Nome Projeto": "Programa Formação de Gestores Faixa Branca e Faixa Amarela – Santa Casa Araquara",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": null,
+      "Parcelamento Linear": "S",
+      "Gerente": "Thiago de Almeida Brandão e Souza",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": null,
+      "Tipo despesa": null,
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": null,
+      "Data término previsto": null,
+      "Aprovação da venda": "2026-01-14",
+      "Liberação pelo comercial": "2026-01-14",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Médico Hospitalar",
+      "Segmento mercado terciário": "Hospitais",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": null,
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (SP)",
+      "Livro": null,
+      "Valor Livro": null,
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": null,
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": null,
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "MATERIAIS ENVIADOS",
+      "DATA": null
+    },
+    {
+      "Proposta": "0019/26 TAN E",
+      "Cliente": "Soma Nutrição Animal Indústria e Comércio LTDA",
+      "Nome fantasia": "Soma Nutrição Animal",
+      "Municipio": "Rio Pomba",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Treinamento - Matricial Integrado",
+      "Data Real": null,
+      "Início": "2026-02-02",
+      "Término": "2027-01-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 21410,
+      "Nome Projeto": null,
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Soma Nutrição Animal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Felipe Pires de Oliveira",
+      "Instrutor": null,
+      "Coordenador": "Luiz Henrique Bahia Lucciola",
+      "Responsável": "Felipe Pires de Oliveira/ Luiz Henrique Bahia Lucciola",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-02-02",
+      "Data término previsto": "2027-01-31",
+      "Aprovação da venda": "2025-01-12",
+      "Liberação pelo comercial": "2026-01-13",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0473/25 PEN",
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Veterinária",
+      "Segmento mercado terciário": "Veterinária",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "SEM MATERIAIS EQUIPE DO PROJETO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0408/25 TNP E",
+      "Cliente": "Prefeitura Municipal de Porto Alegre",
+      "Nome fantasia": "Prefeitura Municipal de Porto Alegre - SEFAZ",
+      "Municipio": "Porto Alegre",
+      "UF": "RS",
+      "País": "Brasil",
+      "Produto": "Treinamento - Programa de Formação de Gestores - Faixa Amarela",
+      "Data Real": null,
+      "Início": "2025-09-30",
+      "Término": "2027-04-12",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 70200,
+      "Nome Projeto": null,
+      "Observação": "Venda: R$ 9.972.000,00. (1.283.220,00 + 43.740,00 + 70.200,00 + 7.589.520,00 + 985.320,00)_x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: As parcelas serão faturadas até 30 dias após a realização de cada turma, com vencimento para 05 (cinco) dias._x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsável pela venda: Afonso Valle;_x000D_\n5 - Haverá logística;_x000D_\n6 - Início do projeto: Agosto_x000D_\n7 - Duração do contrato: 18 meses;_x000D_\n8 - Taxas aplicadas: Consultoria - 60,17%, logística - 30% = Resultante: 57,05%",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Prefeitura Municipal",
+      "Parcelamento Linear": "S",
+      "Gerente": "Afonso Celso Corrêa de Araújo Valle",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Afonso Celso Corrêa de Araújo Valle",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-10-13",
+      "Data término previsto": "2027-04-12",
+      "Aprovação da venda": "2025-10-08",
+      "Liberação pelo comercial": "2025-10-09",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 2",
+      "Faturamento porte da empresa": "entre 200 e 500 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviços Públicos",
+      "Segmento mercado secundário": "Governo Municipal",
+      "Segmento mercado terciário": "Municipal",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Público",
+      "Gestor de Projeto": "João Batista Pires Júnior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sul",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 150,
+      "Valor Total Livro": 5250,
+      "Quantidade Kits": 150,
+      "Valor Kits": 40,
+      "Valor Total Kits": 6000,
+      "Quantidade Certificado": 150,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 750,
+      "Frete": null,
+      "Valor Total": 12000,
+      "RESPOSTAS": "SEM DATA PARA O TREINAMENTO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0457/25 TEN E",
+      "Cliente": "Votorantim S.A.",
+      "Nome fantasia": "Votorantim Holding",
+      "Municipio": "Curitiba",
+      "UF": "PR",
+      "País": "Brasil",
+      "Produto": "Lean Office",
+      "Data Real": null,
+      "Início": "2025-09-11",
+      "Término": "2026-06-11",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 11910,
+      "Nome Projeto": null,
+      "Observação": "Venda: R$ 400.000,00 mil reais. _x000D_\n1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: faturamento com 05 dias após o início das atividades e vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsável pela venda: Dayanne dos Santos;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Duração do contrato: 04 meses;_x000D_\n7 - Início do projeto: 09/2025;_x000D_\n8 - Taxas aplicadas: 51,14%.",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Votorantim Holding",
+      "Parcelamento Linear": "S",
+      "Gerente": "Dayanne dos Santos Vieira",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Felipe Pires de Oliveira/ Luiz Henrique Bahia Lucciola",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-02-02",
+      "Data término previsto": "2027-01-31",
+      "Aprovação da venda": "2025-01-12",
+      "Liberação pelo comercial": "2026-01-13",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0473/25 PEN",
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Indústria",
+      "Segmento mercado secundário": "Veterinária",
+      "Segmento mercado terciário": "Veterinária",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Atual (Renovação)",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "-",
+      "Valor Livro": "-",
+      "Quantidade Livro": null,
+      "Valor Total Livro": null,
+      "Quantidade Kits": null,
+      "Valor Kits": "-",
+      "Valor Total Kits": null,
+      "Quantidade Certificado": null,
+      "Valor Certificado": "-",
+      "Valor Total Certificados": null,
+      "Frete": null,
+      "Valor Total": null,
+      "RESPOSTAS": "SEM MATERIAIS EQUIPE DO PROJETO",
+      "DATA": null
+    },
+    {
+      "Proposta": "0624/25 TNN E",
+      "Cliente": "Casa Mattos LTDA.",
+      "Nome fantasia": "Casa Mattos",
+      "Municipio": "Cataguases",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2026-01-05",
+      "Término": "2027-06-05",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 122220,
+      "Nome Projeto": "Plano de Recomendações  de Recomendações - Diagnóstico de Oportunidade de Melhoria da Gestão",
+      "Observação": "Venda: R$ 1.530.000,00._x000D_\n 1 - Minuta contratual a ser enviada. _x000D_\n2 - Faturamento: A 1ª parcela será faturada 05 dias após o início das atividades, com vencimento para 15 dias;_x000D_\n3 - Não haverá encontro de contas;_x000D_\n4 - Responsáveis pela venda: Felipe Pires e Pedro Henrique;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Início do projeto: Janeiro/2026;_x000D_\n7 - Duração do contrato: 18 meses;_x000D_\n8 - Taxas aplicadas: 56,87%_x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Casa Mattos",
+      "Parcelamento Linear": "S",
+      "Gerente": "Felipe Pires de Oliveira",
+      "Instrutor": null,
+      "Coordenador": "Lucas Resende Ferreira",
+      "Responsável": "Felipe Pires de Oliveira/ Lucas Resende Ferreira",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2026-01-05",
+      "Data término previsto": "2027-07-05",
+      "Aprovação da venda": "2025-12-17",
+      "Liberação pelo comercial": "2025-12-19",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0591/25 PNN",
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Comércio",
+      "Segmento mercado secundário": "Construção",
+      "Segmento mercado terciário": "Materiais de Construção",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Marcelo Rabelo Thebit Dolabela",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 20,
+      "Valor Total Livro": 700,
+      "Quantidade Kits": 20,
+      "Valor Kits": 40,
+      "Valor Total Kits": 800,
+      "Quantidade Certificado": 20,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 100,
+      "Frete": null,
+      "Valor Total": 1600,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0326/25 TAI E",
+      "Cliente": "Farmacias Corporativas SA",
+      "Nome fantasia": "Grupo Nexocorp",
+      "Municipio": "Santa Cruz de la Sierra",
+      "UF": null,
+      "País": "Bolívia",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-08-01",
+      "Término": "2027-01-31",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 68580,
+      "Nome Projeto": null,
+      "Observação": "Venda: R$ 2.430.000,00 (Consultoria 1.232.820,00 + Escola 68.580,00 + )_x000D_\n1 - Minuta contratual a ser enviada;_x000D_\n2 - Faturamento: A fatura será emitida mensalmente após a reunião com o árbitro do projeto, com vencimento em um prazo de até 5 (cinco) dias a partir da data de sua emissão;_x000D_\n3 - Não haverá encontro de Contas;_x000D_\n4 - Responsável pela venda: Vladimir Soares;_x000D_\n5 - Não haverá logística;_x000D_\n6 - Duração do contrato: 18 meses;_x000D_\n7 - Início do projeto: 07/07/2025;_x000D_\n8 - Taxas aplicadas: 52,1%._x000D_",
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Grupo Nexocorp",
+      "Parcelamento Linear": "N",
+      "Gerente": "Vladimir Castro Mendes Soares",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Renato Copello Lamarca/ Vladimir Castro Mendes Soares",
+      "Tipo despesa": "Despesa Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-08-01",
+      "Data término previsto": "2027-01-31",
+      "Aprovação da venda": "2025-06-11",
+      "Liberação pelo comercial": "2025-06-18",
+      "Tipo da venda": "Treinamento com Projeto",
+      "Proposta origem da renovação": "0212/25 PNN",
+      "Descrição porte da empresa": "Grande 2",
+      "Faturamento porte da empresa": "acima de 1 bilhão",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Farmacêutico",
+      "Segmento mercado terciário": "Farmácias e Drogarias",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Internacional",
+      "Gestor de Projeto": "Cláudia Mara Souza Stocco",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Novo",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Ouro",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Exterior",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 70,
+      "Valor Total Livro": 2450,
+      "Quantidade Kits": 70,
+      "Valor Kits": 40,
+      "Valor Total Kits": 2800,
+      "Quantidade Certificado": 70,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 350,
+      "Frete": null,
+      "Valor Total": 5600,
+      "RESPOSTAS": null,
+      "DATA": null
+    },
+    {
+      "Proposta": "0491/25 TNN E",
+      "Cliente": "Fundação Percival Farquhar",
+      "Nome fantasia": "Univale - Universidade Vale do Rio Doce",
+      "Municipio": "Governador Valadares",
+      "UF": "MG",
+      "País": "Brasil",
+      "Produto": "Programa de Formação de Gestores - Faixa Branca",
+      "Data Real": null,
+      "Início": "2025-08-01",
+      "Término": "2025-09-30",
+      "Projeto?": "S",
+      "Resp. Formação Equipe": "Cláudia Mara Souza Stocco",
+      "Status": "Em andamento",
+      "Valor da proposta": 13060,
+      "Nome Projeto": "Imersão 2025",
+      "Observação": null,
+      "Novo Formato": null,
+      "Ritual Gestão": null,
+      "Vencimento NF": null,
+      "Cluster": "Univale - Universida",
+      "Parcelamento Linear": "S",
+      "Gerente": "Roberto Heleno de Oliveira Junior",
+      "Instrutor": null,
+      "Coordenador": null,
+      "Responsável": "Roberto Heleno de Oliveira Junior",
+      "Tipo despesa": "Despesa não Incluída",
+      "Unidade Empresarial": "Escola de Gestão",
+      "Projeto será renovado?": null,
+      "Início efetivo": "2025-08-01",
+      "Data término previsto": "2025-09-30",
+      "Aprovação da venda": "2025-09-04",
+      "Liberação pelo comercial": "2025-09-04",
+      "Tipo da venda": "Treinamento",
+      "Proposta origem da renovação": null,
+      "Descrição porte da empresa": "Média 1",
+      "Faturamento porte da empresa": "entre 50 e 200 milhões",
+      "Porte do projeto": "Pequeno",
+      "Descrição do porte do projeto": "menor ou igual a 300 mil",
+      "Segmento mercado primário": "Serviço",
+      "Segmento mercado secundário": "Ensino",
+      "Segmento mercado terciário": "Universitário/Superior",
+      "Acomp.GP": null,
+      "Total cash": "N",
+      "Mercado": "Nacional",
+      "Gestor de Projeto": "Roberto Heleno de Oliveira Junior",
+      "Atestado de capacidade técnica assinado?": "Não",
+      "Classificação": null,
+      "Código do projeto da renovação": null,
+      "Tipo do cliente": "Expansão",
+      "Motivo do cancelamento do projeto": null,
+      "Motivo da não renovação do projeto": null,
+      "Classificação porte empresa": "Prata",
+      "Classificação cliente": "Cliente ativo",
+      "Região": "Sudeste (MG/ES)",
+      "Livro": "PFG",
+      "Valor Livro": 35,
+      "Quantidade Livro": 48,
+      "Valor Total Livro": 1680,
+      "Quantidade Kits": 48,
+      "Valor Kits": 40,
+      "Valor Total Kits": 1920,
+      "Quantidade Certificado": 48,
+      "Valor Certificado": 5,
+      "Valor Total Certificados": 240,
+      "Frete": null,
+      "Valor Total": 3840,
+      "RESPOSTAS": null,
+      "DATA": null
+    }
+  ]
+};
+const SLIDE_MS = 12000;
+let currentSlide = 0;
+let lastSwitch = Date.now();
+
+function num(v) {
+  const n = Number(v);
+  return Number.isFinite(n) ? n : 0;
+}
+function parseDate(v) {
+  if (!v) return null;
+  const d = new Date(v + 'T00:00:00');
+  return Number.isNaN(d.getTime()) ? null : d;
+}
+function fmtInt(v) {
+  return new Intl.NumberFormat('pt-BR', { maximumFractionDigits:0 }).format(num(v));
+}
+function fmtMoney(v) {
+  return new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:0 }).format(num(v));
+}
+function fmtMoney1(v) {
+  return new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:1 }).format(num(v));
+}
+function longDate(d) {
+  return d ? d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' }) : '-';
+}
+function shortDay(d) {
+  return d ? d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }) : '-';
+}
+function spToday() {
+  return new Date(new Intl.DateTimeFormat('en-CA', {
+    timeZone:'America/Sao_Paulo', year:'numeric', month:'2-digit', day:'2-digit'
+  }).format(new Date()) + 'T00:00:00');
+}
+function dayDiff(a, b) {
+  const x = new Date(a); const y = new Date(b);
+  x.setHours(0,0,0,0); y.setHours(0,0,0,0);
+  return Math.round((y - x) / 86400000);
+}
+function esc(s) {
+  return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+}
+function windowInfo(row, today) {
+  const inicio = parseDate(row['Início']);
+  const termino = parseDate(row['Término']);
+  const status = (row.Status || '').toLowerCase();
+  const active = inicio && termino && inicio <= today && termino >= today;
+  if (status === 'previsão' && inicio) {
+    const diff = dayDiff(today, inicio);
+    if (diff > 0) return { type:'start_future', label:'começa em', days:diff, date:inicio };
+    if (diff === 0) return { type:'start_today', label:'começa hoje', days:0, date:inicio };
+    return { type:'start_overdue', label:'data vencida há', days:Math.abs(diff), date:inicio };
+  }
+  if (active && termino) {
+    return { type:'end_active', label:'termina em', days:dayDiff(today, termino), date:termino };
+  }
+  if (inicio && inicio >= today) {
+    return { type:'start_future', label:'começa em', days:dayDiff(today, inicio), date:inicio };
+  }
+  if (termino) {
+    return { type:'end_other', label:'termina em', days:Math.abs(dayDiff(today, termino)), date:termino };
+  }
+  return { type:'none', label:'sem data', days:9999, date:null };
+}
+function prioritySort(records, today) {
+  function score(r) {
+    const w = windowInfo(r, today);
+    let bucket = 5;
+    if (w.type === 'start_future' && w.days <= 30) bucket = 0;
+    else if (w.type === 'start_today') bucket = 0;
+    else if (w.type === 'start_overdue') bucket = 1;
+    else if (w.type === 'start_future') bucket = 2;
+    else if (w.type === 'end_active') bucket = 3;
+    return [bucket, w.days, parseDate(r['Início']) || new Date('2100-01-01')];
+  }
+  return [...records].sort((a,b) => {
+    const sa = score(a), sb = score(b);
+    if (sa[0] !== sb[0]) return sa[0] - sb[0];
+    if (sa[1] !== sb[1]) return sa[1] - sb[1];
+    return sa[2] - sb[2];
+  });
+}
+function tagForWindow(w) {
+  if (w.type === 'start_future' && w.days <= 7) return { cls:'warn', text:`${w.days} dia(s)` };
+  if (w.type === 'start_future') return { cls:'ok', text:`${w.days} dia(s)` };
+  if (w.type === 'start_today') return { cls:'warn', text:'hoje' };
+  if (w.type === 'start_overdue') return { cls:'danger', text:`${w.days} dia(s) atrasado` };
+  if (w.type === 'end_active') return { cls:'ok', text:`${w.days} dia(s)` };
+  return { cls:'ok', text:'-' };
+}
+function rankBy(records, keyFn, valueFn, limit) {
+  const map = new Map();
+  records.forEach(r => {
+    const key = keyFn(r);
+    if (!key || key === '-') return;
+    map.set(key, (map.get(key) || 0) + valueFn(r));
+  });
+  return [...map.entries()].sort((a,b) => b[1] - a[1]).slice(0, limit).map(([label, value]) => ({ label, value }));
+}
+function normalizeProduct(label) {
+  if (!label) return 'Sem produto';
+  return String(label)
+    .replace(/^Treinamento\s*-\s*/i, '')
+    .replace(/^Programa de\s*/i, 'Prog. ')
+    .replace(/^Programa\s*/i, 'Prog. ')
+    .trim();
+}
+function renderStartSlide(records, today) {
+  const previsao = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today);
+  const overdue = previsao.filter(r => windowInfo(r, today).type === 'start_overdue').length;
+  const next30 = previsao.filter(r => {
+    const w = windowInfo(r, today);
+    return (w.type === 'start_future' || w.type === 'start_today') && w.days <= 30;
+  }).length;
+  const noMaterial = previsao.filter(r => !(num(r['Quantidade Livro']) || num(r['Quantidade Kits']) || num(r['Quantidade Certificado']))).length;
+  document.getElementById('startKpis').innerHTML = [
+    { label:'Projetos em previsão', value: fmtInt(previsao.length), sub:'Carteira prevista para começar.' },
+    { label:'Começam em até 30 dias', value: fmtInt(next30), sub:'Esses precisam estar muito visíveis.' },
+    { label:'Previsão com data vencida', value: fmtInt(overdue), sub:'Acende alerta operacional.' },
+    { label:'Previsão sem material', value: fmtInt(noMaterial), sub:'Sem livro, kit ou certificado lançado.' }
+  ].map(k => `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');
+
+  const priority = previsao.find(r => {
+    const w = windowInfo(r, today);
+    return w.type === 'start_future' || w.type === 'start_today';
+  }) || previsao[0];
+
+  const pw = priority ? windowInfo(priority, today) : null;
+  document.getElementById('priorityHero').innerHTML = priority ? `
+    <div class="eyebrow">${pw.type === 'start_overdue' ? 'alerta de previsão' : 'próximo início confirmado pela planilha'}</div>
+    <div class="days">${pw.days}<small>${pw.type === 'start_overdue' ? 'dias de atraso' : (pw.days === 0 ? 'começa hoje' : 'dias para iniciar')}</small></div>
+    <div class="client">${esc(priority.Cliente || '-')}</div>
+    <div class="product">${esc(priority.Produto || '-')}</div>
+    <div class="meta">
+      <span class="tag ${pw.type === 'start_overdue' ? 'danger' : pw.days <= 7 ? 'warn' : 'ok'}">Início · ${longDate(pw.date)}</span>
+      <span class="tag">${esc(priority.UF || '-')}</span>
+      <span class="tag">${esc(priority.Proposta || '-')}</span>
+      <span class="tag">Materiais · Livros ${fmtInt(priority['Quantidade Livro'])} · Kits ${fmtInt(priority['Quantidade Kits'])} · Cert. ${fmtInt(priority['Quantidade Certificado'])}</span>
+    </div>` : `<div class="client">Sem projeto em previsão</div>`;
+
+  const mini = previsao.slice(0,4).map(r => {
+    const w = windowInfo(r, today);
+    const badgeClass = w.type === 'start_overdue' ? 'overdue' : (w.days <= 7 ? 'soon' : 'future');
+    const badgeText = w.type === 'start_overdue' ? `${w.days}d atrasado` : (w.days === 0 ? 'hoje' : `${w.days}d`);
+    return `
+      <div class="mini-alert">
+        <div class="top">
+          <div>
+            <strong>${esc(r.Cliente || '-')}</strong>
+            <div class="small">${esc(r.Produto || '-')}</div>
+          </div>
+          <div class="badge ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
+        <div class="small">Início ${longDate(w.date)} · Livros ${fmtInt(r['Quantidade Livro'])} · Kits ${fmtInt(r['Quantidade Kits'])}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('miniAlerts').innerHTML = mini;
+
+  const radar = previsao.slice(0,8).map(r => {
+    const w = windowInfo(r, today);
+    const tag = tagForWindow(w);
+    return `
+      <div class="mini-alert">
+        <div class="top">
+          <div>
+            <strong>${esc(r.Cliente || '-')}</strong>
+            <div class="small">${esc(r.Produto || '-')}</div>
+          </div>
+          <div class="badge ${w.type === 'start_overdue' ? 'overdue' : (w.days <= 7 ? 'soon' : 'future')}">${tag.text}</div>
+        </div>
+        <div class="small">Início: <strong>${longDate(w.date)}</strong> · ${esc(r['Gestor de Projeto'] || 'Sem GP')}</div>
+        <div class="small">Material: livros ${fmtInt(r['Quantidade Livro'])} · kits ${fmtInt(r['Quantidade Kits'])} · cert. ${fmtInt(r['Quantidade Certificado'])}</div>
+      </div>`;
+  }).join('');
+  document.getElementById('startRadar').innerHTML = radar || '<div class="mini-alert"><strong>Sem registros em previsão.</strong></div>';
+}
+function renderAgendaSlide(records, today) {
+  const active = records
+    .filter(r => {
+      const i = parseDate(r['Início']); const t = parseDate(r['Término']);
+      return (r.Status || '').toLowerCase() === 'em andamento' && i && t && i <= today && t >= today;
+    })
+    .sort((a,b) => (parseDate(a['Término']) || new Date('2100-01-01')) - (parseDate(b['Término']) || new Date('2100-01-01')))
+    .slice(0, 6);
+
+  const forecast = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today).slice(0, 6);
+
+  document.getElementById('activeList').innerHTML = active.map(r => {
+    const end = parseDate(r['Término']);
+    const days = dayDiff(today, end);
+    return `
+      <div class="list-item">
+        <div class="date-box"><strong>${shortDay(end)}</strong><span>Término</span></div>
+        <div class="main">
+          <strong>${esc(r.Cliente || '-')}</strong>
+          <div class="small">${esc(r.Produto || '-')}</div>
+          <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
+        </div>
+        <div class="side"><strong>${days}</strong>dias</div>
+      </div>`;
+  }).join('') || '<div class="mini-alert"><strong>Nenhum projeto ativo na base.</strong></div>';
+
+  document.getElementById('forecastList').innerHTML = forecast.map(r => {
+    const w = windowInfo(r, today);
+    const delta = w.type === 'start_overdue' ? `${w.days}d atraso` : (w.days === 0 ? 'hoje' : `${w.days}d`);
+    return `
+      <div class="list-item">
+        <div class="date-box"><strong>${shortDay(w.date)}</strong><span>Início</span></div>
+        <div class="main">
+          <strong>${esc(r.Cliente || '-')}</strong>
+          <div class="small">${esc(r.Produto || '-')}</div>
+          <div class="small">GP: ${esc(r['Gestor de Projeto'] || '-')} · Materiais: L ${fmtInt(r['Quantidade Livro'])} / K ${fmtInt(r['Quantidade Kits'])}</div>
+        </div>
+        <div class="side"><strong>${delta}</strong>${w.type === 'start_overdue' ? 'vencido' : 'até iniciar'}</div>
+      </div>`;
+  }).join('') || '<div class="mini-alert"><strong>Sem previsão de início cadastrada.</strong></div>';
+}
+function renderMaterialsSlide(records, today) {
+  const booksQty = records.reduce((s,r) => s + num(r['Quantidade Livro']), 0);
+  const kitsQty = records.reduce((s,r) => s + num(r['Quantidade Kits']), 0);
+  const certQty = records.reduce((s,r) => s + num(r['Quantidade Certificado']), 0);
+  const booksVal = records.reduce((s,r) => s + num(r['Valor Total Livro']), 0);
+  const kitsVal = records.reduce((s,r) => s + num(r['Valor Total Kits']), 0);
+  const certVal = records.reduce((s,r) => s + num(r['Valor Total Certificados']), 0);
+  const totalItems = Math.max(booksQty + kitsQty + certQty, 1);
+
+  document.getElementById('materialCards').innerHTML = `
+    <div class="metric-box">
+      <div class="muted">Itens totais planejados</div>
+      <div class="big">${fmtInt(totalItems)}</div>
+      <div class="muted" style="margin-top:8px;">Livros + kits + certificados.</div>
+    </div>
+    <div class="metric-box">
+      <div class="muted">Livros</div>
+      <div class="big">${fmtInt(booksQty)}</div>
+      <div class="muted" style="margin-top:8px;">${fmtMoney1(booksVal)}</div>
+      <div class="meter"><div style="width:${(booksQty/totalItems)*100}%"></div></div>
+    </div>
+    <div class="metric-box">
+      <div class="muted">Kits</div>
+      <div class="big">${fmtInt(kitsQty)}</div>
+      <div class="muted" style="margin-top:8px;">${fmtMoney1(kitsVal)}</div>
+      <div class="meter"><div style="width:${(kitsQty/totalItems)*100}%"></div></div>
+    </div>
+    <div class="metric-box">
+      <div class="muted">Certificados</div>
+      <div class="big">${fmtInt(certQty)}</div>
+      <div class="muted" style="margin-top:8px;">${fmtMoney1(certVal)}</div>
+      <div class="meter"><div style="width:${(certQty/totalItems)*100}%"></div></div>
+    </div>`;
+
+  const materialRows = prioritySort(records.filter(r => num(r['Quantidade Livro']) || num(r['Quantidade Kits']) || num(r['Quantidade Certificado'])), today)
+    .sort((a,b) => num(b['Valor Total']) - num(a['Valor Total']))
+    .slice(0,8);
+
+  document.getElementById('materialsTable').innerHTML = materialRows.map(r => {
+    const w = windowInfo(r, today);
+    return `
+      <tr>
+        <td>
+          <strong class="mono">${esc(r.Proposta || '-')}</strong>
+          <div class="muted">${esc(r.Cliente || '-')}</div>
+        </td>
+        <td>
+          <strong>${w.type.startsWith('start') ? 'Início' : 'Término'}:</strong> ${longDate(w.date)}
+          <div class="muted">${esc(r.Produto || '-')}</div>
+        </td>
+        <td>
+          L ${fmtInt(r['Quantidade Livro'])} · K ${fmtInt(r['Quantidade Kits'])} · C ${fmtInt(r['Quantidade Certificado'])}
+        </td>
+        <td><strong>${fmtMoney1(r['Valor Total'])}</strong></td>
+      </tr>`;
+  }).join('');
+}
+function renderExecSlide(records, today) {
+  const total = records.length;
+  const andamento = records.filter(r => (r.Status || '').toLowerCase() === 'em andamento').length;
+  const previsao = records.filter(r => (r.Status || '').toLowerCase() === 'previsão').length;
+  const valor = records.reduce((s,r) => s + num(r['Valor da proposta']), 0);
+  document.getElementById('execKpis').innerHTML = [
+    { label:'Em andamento', value: fmtInt(andamento), sub:`${Math.round(andamento/Math.max(total,1)*100)}% da base` },
+    { label:'Previsão', value: fmtInt(previsao), sub:`${Math.round(previsao/Math.max(total,1)*100)}% da base` },
+    { label:'Valor propostas', value: fmtMoney(valor), sub:'Soma da coluna comercial' }
+  ].map(k => `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');
+
+  document.getElementById('valueTable').innerHTML = [...records]
+    .sort((a,b) => num(b['Valor da proposta']) - num(a['Valor da proposta']))
+    .slice(0,8)
+    .map(r => `
+      <tr>
+        <td><strong class="mono">${esc(r.Proposta || '-')}</strong><div class="muted">${esc(r.UF || '-')}</div></td>
+        <td><strong>${esc(r.Cliente || '-')}</strong><div class="muted">${esc(r.Produto || '-')}</div></td>
+        <td>${esc(r.Status || '-')}</td>
+        <td><strong>${fmtMoney(r['Valor da proposta'])}</strong></td>
+      </tr>
+    `).join('');
+
+  const gps = rankBy(records, r => r['Gestor de Projeto'], _ => 1, 4);
+  const ufs = rankBy(records, r => r.UF, r => num(r['Valor Total']), 4);
+  const prods = rankBy(records, r => normalizeProduct(r.Produto), _ => 1, 4);
+
+  function barHtml(items, suffix, title) {
+    const max = Math.max(...items.map(i => i.value), 1);
+    return `<div class="muted" style="margin:4px 0 10px;">${title}</div>` + items.map(i => `
+      <div class="bar-item">
+        <div>
+          <div class="bar-top"><span>${esc(i.label)}</span><span class="muted">${suffix(i.value)}</span></div>
+          <div class="bar-track"><div class="bar-fill" style="width:${(i.value/max)*100}%"></div></div>
+        </div>
+        <div class="bar-value">${suffix(i.value)}</div>
+      </div>
+    `).join('');
+  }
+  document.getElementById('gpBars').innerHTML = barHtml(gps, v => `${fmtInt(v)} proj.`, 'Gestores com mais projetos');
+  document.getElementById('ufBars').innerHTML = barHtml(ufs, v => fmtMoney1(v), 'UF com maior volume financeiro de materiais');
+  document.getElementById('productBars').innerHTML = barHtml(prods, v => `${fmtInt(v)} proj.`, 'Produtos com mais projetos');
+}
+function parseSessions(raw) {
+  if (!raw) return [];
+  return raw.split(/[;\n]/).map(s => s.trim()).filter(Boolean);
+}
+function renderTreinamentosSlide(records, today) {
+  const previsao = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today);
+  const hero = previsao.find(r => {
+    const w = windowInfo(r, today);
+    return w.type === 'start_future' || w.type === 'start_today';
+  }) || previsao[0];
+
+  if (hero) {
+    const w = windowInfo(hero, today);
+    const sessions = parseSessions(hero['Data Real']);
+    const sessionsHtml = sessions.length
+      ? `<div class="sess-lbl" style="margin-top:4px;">Sessões previstas</div>
+         <div style="margin-top:6px;">${sessions.map(s => `<span class="session-tag">${esc(s)}</span>`).join('')}</div>`
+      : '<div class="sess-lbl" style="margin-top:8px;">Data real não informada</div>';
+    const alertCls = w.type === 'start_overdue' ? 'danger' : w.days <= 7 ? 'warn' : 'ok';
+    document.getElementById('treinHero').innerHTML = `
+      <div class="eyebrow">${w.type === 'start_overdue' ? 'alerta · início vencido' : 'próximo treinamento'}</div>
+      <div class="dias">${w.days}<small>${w.type === 'start_overdue' ? 'dias de atraso' : w.days === 0 ? 'começa hoje' : 'dias para iniciar'}</small></div>
+      <div class="cli">${esc(hero.Cliente || '-')}</div>
+      <div class="prod">${esc(hero.Produto || '-')}</div>
+      <div class="meta" style="margin-top:10px;">
+        <span class="tag ${alertCls}">Início · ${longDate(w.date)}</span>
+        <span class="tag">${esc(hero.UF || '-')} · ${esc(hero.Municipio || '-')}</span>
+        ${hero.Instrutor ? `<span class="tag">Instrutor: ${esc(hero.Instrutor)}</span>` : ''}
+        <span class="tag">Livros ${fmtInt(hero['Quantidade Livro'])} · Kits ${fmtInt(hero['Quantidade Kits'])}</span>
+      </div>
+      ${sessionsHtml}`;
+  } else {
+    document.getElementById('treinHero').innerHTML = '<div class="cli">Sem treinamentos em previsão.</div>';
+  }
+
+  document.getElementById('treinList').innerHTML = previsao.slice(0, 8).map(r => {
+    const w = windowInfo(r, today);
+    const badgeClass = w.type === 'start_overdue' ? 'overdue' : w.days <= 7 ? 'soon' : 'future';
+    const badgeText  = w.type === 'start_overdue' ? `${w.days}d atraso` : w.days === 0 ? 'hoje' : `${w.days}d`;
+    const sessions   = parseSessions(r['Data Real']);
+    return `
+      <div class="mini-alert">
+        <div class="top">
+          <div>
+            <strong>${esc(r.Cliente || '-')}</strong>
+            <div class="small">${esc(r.Produto || '-')}</div>
+          </div>
+          <div class="badge ${badgeClass}">${badgeText}</div>
+        </div>
+        <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
+        <div class="small">Início ${longDate(w.date)} · ${r.Instrutor ? 'Instr.: ' + esc(r.Instrutor) : 'Sem instrutor'}</div>
+        ${sessions.length ? `<div style="margin-top:5px;">${sessions.map(s => `<span class="session-tag">${esc(s)}</span>`).join('')}</div>` : ''}
+      </div>`;
+  }).join('') || '<div class="mini-alert"><strong>Sem previsão de treinamentos.</strong></div>';
+}
+function renderAll(data, modeText) {
+  const records = (data.records || []).map(r => ({...r}));
+  const today = spToday();
+  document.getElementById('modeBadge').textContent = modeText;
+  document.getElementById('fileInfo').textContent = `${data.source_file || '-'} · ${data.source_sheet || '-'}`;
+  document.getElementById('generatedAt').textContent = `Base extraída em ${new Date(data.generated_at).toLocaleString('pt-BR')}`;
+  renderStartSlide(records, today);
+  renderTreinamentosSlide(records, today);
+  renderAgendaSlide(records, today);
+  renderMaterialsSlide(records, today);
+  renderExecSlide(records, today);
+}
+async function loadData() {
+  try {
+    const res = await fetch(`dashboard_tv_data.json?ts=${Date.now()}`, { cache:'no-store' });
+    if (!res.ok) throw new Error('erro');
+    const data = await res.json();
+    renderAll(data, 'Modo dinâmico · JSON atualizado');
+  } catch (e) {
+    renderAll(EMBEDDED_DATA, 'Modo estático · fallback embutido');
+  }
+}
+function updateClock() {
+  document.getElementById('clockNow').textContent = new Date().toLocaleString('pt-BR', {
+    timeZone:'America/Sao_Paulo',
+    day:'2-digit', month:'2-digit', year:'numeric',
+    hour:'2-digit', minute:'2-digit', second:'2-digit'
+  });
+}
+function setSlide(index) {
+  const slides = [...document.querySelectorAll('.slide')];
+  const dots = [...document.querySelectorAll('.dots button')];
+  currentSlide = (index + slides.length) % slides.length;
+  slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
+  dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  lastSwitch = Date.now();
+}
+function initDots() {
+  const slides = [...document.querySelectorAll('.slide')];
+  const wrap = document.getElementById('dots');
+  wrap.innerHTML = slides.map((_, i) => `<button aria-label="slide ${i+1}"></button>`).join('');
+  [...wrap.querySelectorAll('button')].forEach((btn, i) => btn.addEventListener('click', () => setSlide(i)));
+  setSlide(0);
+}
+function tickProgress() {
+  const fill = document.getElementById('progressFill');
+  const elapsed = Date.now() - lastSwitch;
+  const p = Math.min(100, (elapsed / SLIDE_MS) * 100);
+  fill.style.width = p + '%';
+  if (elapsed >= SLIDE_MS) setSlide(currentSlide + 1);
+  requestAnimationFrame(tickProgress);
+}
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'ArrowRight') setSlide(currentSlide + 1);
+  if (e.key === 'ArrowLeft') setSlide(currentSlide - 1);
+});
+initDots();
+tickProgress();
+loadData();
+updateClock();
+setInterval(updateClock, 1000);
+setInterval(loadData, 60000);
+</script>
+</body>
+</html>
