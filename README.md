@@ -1,267 +1,212 @@
-# Dashboard TV Slides - v1
+# Dashboard TV — v2
 
-Painel de monitoramento de projetos e treinamentos para exibição contínua em TVs e monitores. Desenvolvido para rodar em modo tela cheia com troca automática de slides, permitindo que equipes acompanhem o status da carteira de projetos sem intervenção manual.
-
-![Versão](https://img.shields.io/badge/versão-1.0.0-blue)
-![Licença](https://img.shields.io/badge/licença-privado-lightgrey)
+Painel de monitoramento de projetos e treinamentos para exibição contínua em TVs corporativas.  
+Os dados saem direto da planilha Excel e chegam ao site automaticamente — sem copiar arquivos, sem abrir terminais, sem pressionar F5.
 
 ---
 
-## Índice
+## Como funciona
 
-- [Visão Geral](#visão-geral)
-- [Funcionalidades](#funcionalidades)
-- [Estrutura dos Slides](#estrutura-dos-slides)
-- [Instalação](#instalação)
-- [Como Usar](#como-usar)
-- [Atualização dos Dados](#atualização-dos-dados)
-- [Configuração](#configuração)
-- [Estrutura de Arquivos](#estrutura-de-arquivos)
-- [Tecnologias](#tecnologias)
-- [Solução de Problemas](#solução-de-problemas)
-- [Suporte](#suporte)
+```
+Você salva o Excel
+      ↓  até 30 s
+monitor_excel.py detecta a mudança (hash MD5)
+      ↓  instantâneo
+gerar_dashboard_json.py converte a planilha em JSON
+      ↓  instantâneo
+git commit + push → GitHub
+      ↓  ~60 s  (GitHub Pages republica o site)
+Site detecta o JSON novo via fetch()
+      ↓  até 20 s  (polling automático)
+TV exibe os dados atualizados — sem F5
+```
+
+**Tempo total:** 1 a 2 minutos após salvar o Excel.
 
 ---
 
-## Visão Geral
+## Slides
 
-Este dashboard transforma dados de uma planilha Excel de acompanhamento de projetos em uma experiência visual de slides automáticos. Ideal para exibir em TVs de escritório, monitores de equipe ou salas de reunião, oferecendo uma visão clara e atualizada de:
+| # | Título | O que exibe |
+|---|--------|-------------|
+| 0 | O que está mais perto de começar | Projeto prioritário, dias restantes, radar de inícios, alertas |
+| 1 | Próximos Treinamentos | Sessões confirmadas, datas, instrutor |
+| 2 | Agenda Operacional | Projetos em andamento e fila de início |
+| 3 | Envios e Materiais | Livros, kits, certificados por projeto |
+| 4 | Resumo Executivo | KPIs da carteira, ranking por valor, gestor, UF, produto |
 
-- Projetos em andamento e seus prazos
-- Próximos treinamentos e sessões confirmadas
-- Materiais, livros e kits previstos
-- Resumo executivo da carteira de projetos
-- Alertas visuais para projetos atrasados ou prestes a iniciar
-
----
-
-## Funcionalidades
-
-- **Troca automática de slides** — rotação a cada 12 segundos, sem necessidade de interação
-- **Atualização automática dos dados** — lê o arquivo `dashboard_tv_data.json` a cada 60 segundos
-- **Interface responsiva** — adapta-se a qualquer resolução de tela (Full HD, 4K, etc.)
-- **Alertas visuais** — destaque para projetos com data vencida, previsão próxima e prioridade máxima
-- **KPIs em tempo real** — total de projetos, valor da carteira, treinamentos pendentes
-- **Design profissional** — gradientes, glassmorphism e animações suaves
-- **Relógio integrado** — exibe data e hora atuais no topo do painel
-- **Indicadores de progresso** — barra e dots mostrando o slide atual
-- **Zero dependência de servidor** — roda 100% no navegador, sem backend
+Troca automática a cada **30 segundos** · barra de progresso · navegação por dots ou setas do teclado.
 
 ---
 
-## Estrutura dos Slides
+## Arquivos do sistema
 
-| Slide | Conteúdo | Descrição |
-|-------|----------|-----------|
-| **0** | O que está mais perto de começar | Projeto prioridade máxima, dias restantes, radar de inícios e alertas |
-| **1** | Próximos Treinamentos | Sessões confirmadas, datas previstas, instrutor por projeto |
-| **2** | Agenda Operacional | Projetos em andamento com prazos próximos e fila de início |
-| **3** | Envios e Materiais | Livros, kits, certificados e projetos com maior demanda |
-| **4** | Resumo Executivo | Status da carteira, maiores propostas, distribuição por gestor/UF/produto |
-
----
-
-## Instalação
-
-### Pré-requisitos
-
-- Python 3.8+ (para geração do JSON)
-- Navegador moderno (Chrome, Edge, Firefox)
-- Arquivo Excel com a base de projetos
-
-### Passos
-
-1. **Clone ou baixe** este repositório para uma pasta local
-2. **Instale a dependência** do Python:
-
-```bash
-pip install openpyxl
-```
-
-3. **Gere o JSON** a partir da planilha:
-
-```bash
-python gerar_dashboard_json.py "Andamento - Projetos.xlsx" filtrada dashboard_tv_data.json
-```
-
-4. **Abra o dashboard** no navegador:
-
-```
-dashboard_tv_slides_auto.html
-```
-
-5. Pressione **F11** para tela cheia
-
----
-
-## Como Usar
-
-### Exibição em TV
-
-1. Abra o arquivo `dashboard_tv_slides_auto.html` no navegador da TV ou dispositivo conectado
-2. Pressione `F11` (ou equivalente) para ativar o modo tela cheia
-3. Os slides começam a rotacionar automaticamente a cada 12 segundos
-4. A barra de progresso na parte inferior mostra o tempo restante do slide
-
-### Controles Manuais
-
-- **Clique nos dots** na parte inferior para navegar entre slides
-- **Barra de progresso** indica visualmente o slide atual e o tempo restante
-
-### Atualização dos Dados
-
-O painel verifica o arquivo `dashboard_tv_data.json` a cada 60 segundos. Se o arquivo for atualizado, o dashboard carrega os novos dados automaticamente, sem precisar recarregar a página.
-
----
-
-## Atualização dos Dados
-
-### Via Linha de Comando
-
-```bash
-python gerar_dashboard_json.py "Andamento - Projetos.xlsx" filtrada dashboard_tv_data.json
-```
-
-### Parâmetros do Script
-
-| Argumento | Descrição | Padrão |
-|-----------|-----------|--------|
-| `INPUT_XLSX` | Caminho para o arquivo Excel | `Andamento - Projetos.xlsx` |
-| `SHEET_NAME` | Nome da aba da planilha | `filtrada` |
-| `OUTPUT_JSON` | Caminho do JSON de saída | `dashboard_tv_data.json` |
-
-### Exemplos
-
-```bash
-# Usando padrões
-python gerar_dashboard_json.py
-
-# Caminho personalizado
-python gerar_dashboard_json.py "C:\dados\projetos.xlsx" base dashboard_data.json
-
-# Com caminho relativo
-python gerar_dashboard_json.py ../dados/andamento.xlsx filtrada data.json
-```
-
-### Atualização Automatizada (Opcional)
-
-Para atualizar automaticamente a cada hora no Windows, use o **Agendador de Tarefas**:
-
-1. Crie um arquivo `.bat`:
-
-```bat
-@echo off
-cd /d "C:\caminho\do\projeto"
-python gerar_dashboard_json.py "Andamento - Projetos.xlsx" filtrada dashboard_tv_data.json
-```
-
-2. Agende a execução no **Task Scheduler** do Windows
-
----
-
-## Configuração
-
-### Intervalo dos Slides
-
-No arquivo `dashboard_tv_slides_auto.html`, localize e ajuste:
-
-```javascript
-const SLIDE_INTERVAL = 12000; // 12 segundos (em milissegundos)
-```
-
-### Frequência de Atualização dos Dados
-
-```javascript
-const DATA_REFRESH_INTERVAL = 60000; // 60 segundos (em milissegundos)
-```
-
-### Cores e Tema
-
-As variáveis CSS no topo do arquivo HTML permitem personalizar:
-
-```css
-:root {
-  --bg1: #07111f;
-  --accent: #57a4ff;
-  --accent2: #8a7dff;
-  --ok: #3ddc97;
-  --warn: #f4c75b;
-  --danger: #ff6b6b;
-  /* ... */
-}
-```
-
----
-
-## Estrutura de Arquivos
-
-```
-dashboard_tv_slides_pacote/
-├── dashboard_tv_slides_auto.html   # Painel principal (HTML + CSS + JS)
-├── dashboard_tv_data.json          # Dados dos projetos (gerado pelo script)
-├── gerar_dashboard_json.py         # Script Python para gerar o JSON
-└── README.md                       # Esta documentação
-```
-
-### Descrição dos Arquivos
+### Repositório GitHub
 
 | Arquivo | Função |
 |---------|--------|
-| `dashboard_tv_slides_auto.html` | Interface completa do dashboard com HTML, CSS e JavaScript integrados |
-| `dashboard_tv_data.json` | Dados estruturados extraídos da planilha Excel |
-| `gerar_dashboard_json.py` | Script Python que converte a planilha em JSON |
-| `README.md` | Documentação do projeto |
+| `dashboard_tv_slides_auto.html` | Site completo (HTML + CSS + JS) |
+| `dashboard_tv_data.json` | Dados gerados automaticamente — não editar manualmente |
+| `gerar_dashboard_json.py` | Converte Excel → JSON com formato correto |
+| `atualizar_dashboard.bat` | Atualização manual forçada |
+| `monitor_excel.py` | Script do monitor — copiar para a pasta Scripts |
+| `iniciar_monitor_oculto.vbs` | Launcher sem janela — copiar para a pasta Scripts |
+| `log_atualizacao.txt` | Registro gerado automaticamente de todas as sincronizações |
+
+### PC local (fora do repositório)
+
+| Caminho | Função |
+|---------|--------|
+| `C:\Users\Consultor\Scripts\dashboard-monitor\monitor_excel.py` | Monitor rodando em segundo plano |
+| `C:\Users\Consultor\Scripts\dashboard-monitor\iniciar_monitor_oculto.vbs` | Launcher — duplo clique para iniciar oculto |
+| `C:\Users\Consultor\Aquila\ADM - EGA - General\Arquivos Referencias\Escola\Andamento - Projetos.xlsx` | Planilha monitorada |
 
 ---
 
-## Tecnologias
+## Configuração inicial (fazer uma vez)
 
-- **HTML5** — estrutura semântica do painel
-- **CSS3** — Grid, Flexbox, variáveis CSS, animações, glassmorphism, gradientes
-- **JavaScript (vanilla)** — lógica de slides, atualização de dados, relógio, KPIs
-- **Python 3** — geração do JSON via `openpyxl`
-- **openpyxl** — leitura de arquivos Excel `.xlsx`
+### 1. Instalar dependência Python
 
----
+```
+pip install openpyxl
+```
 
-## Solução de Problemas
+### 2. Copiar os scripts do monitor
 
-### O dashboard não carrega os dados
+Após clonar o repositório, copie para a pasta do monitor:
 
-1. Verifique se `dashboard_tv_data.json` está na **mesma pasta** que o HTML
-2. Abra o console do navegador (`F12`) e verifique erros
-3. Valide o JSON em um validador online (ex: jsonlint.com)
+```
+monitor_excel.py           →  C:\Users\Consultor\Scripts\dashboard-monitor\
+iniciar_monitor_oculto.vbs →  C:\Users\Consultor\Scripts\dashboard-monitor\
+```
 
-### Os dados não atualizam
+### 3. Configurar inicialização automática com o Windows
 
-1. Certifique-se de que o JSON foi gerado corretamente pelo script Python
-2. O navegador pode estar com cache — force recarregamento com `Ctrl + Shift + R`
-3. Verifique as permissões de leitura do arquivo JSON
+1. `Win + R` → digite `shell:startup` → Enter
+2. Na pasta que abrir, crie um atalho apontando para:
+   ```
+   C:\Users\Consultor\Scripts\dashboard-monitor\iniciar_monitor_oculto.vbs
+   ```
+3. Pronto — o monitor inicia sozinho toda vez que o Windows ligar.
 
-### O slide não troca automaticamente
+### 4. Autenticação Git
 
-1. Verifique se o JavaScript não está bloqueado no navegador
-2. Abra o console (`F12 > Console`) para identificar erros
-3. Teste em outro navegador (Chrome ou Edge recomendado)
+No repositório local, confirme que o push funciona:
 
-### Layout desconfigurado
+```
+git push origin main
+```
 
-1. Certifique-se de que o navegador está em **tela cheia** (`F11`)
-2. Resoluções abaixo de 1280x720 podem apresentar problemas de layout
-3. Recomendado: Full HD (1920x1080) ou 4K
+Se pedir credenciais, configure uma vez:
 
-### Script Python falha
-
-1. Instale a dependência: `pip install openpyxl`
-2. Verifique se o arquivo Excel existe e a aba `filtrada` está presente
-3. Execute com verbose: `python gerar_dashboard_json.py 2>&1`
+```
+git config --global credential.helper manager
+```
 
 ---
 
-## Suporte
+## Uso diário
 
-Em caso de dúvidas ou problemas, entre em contato com a equipe de desenvolvimento.
+**Iniciar o monitor agora** — duplo clique em `iniciar_monitor_oculto.vbs`.  
+Nenhuma janela aparece. O processo sobe completamente oculto.
+
+**Verificar se está rodando** — Gerenciador de Tarefas (`Ctrl + Shift + Esc`) → aba **Detalhes** → procure `pythonw.exe`.
+
+**Encerrar o monitor** — Gerenciador de Tarefas → botão direito em `pythonw.exe` → **Finalizar tarefa**.
+
+**Forçar atualização manual** — duplo clique em `atualizar_dashboard.bat` no repositório local.
+
+**Ver o log** — abra `log_atualizacao.txt` na raiz do repositório local.
 
 ---
 
-**Dashboard TV Slides v1** — Desenvolvido para exibição contínua em ambiente corporativo.
+## Exibição na TV
+
+1. Abra `dashboard_tv_slides_auto.html` no navegador
+2. `F11` para tela cheia
+3. Os slides rotacionam automaticamente — nenhuma interação necessária
+
+O site verifica o JSON a cada **20 segundos** com `cache: 'no-store'` (ignora cache do navegador). Quando detecta dados novos, atualiza todos os slides automaticamente e exibe o badge **"Modo dinâmico · JSON atualizado"**. Se o fetch falhar (sem internet, GitHub fora do ar), mantém os últimos dados com o badge **"usando cache local"**.
+
+---
+
+## Detalhes técnicos
+
+### Por que o monitor usa MD5 e não data de modificação?
+
+O Excel atualiza a data de modificação do arquivo mesmo em saves automáticos sem alteração de conteúdo. O hash MD5 garante que a sincronização só dispara quando os dados realmente mudam.
+
+### Formato do JSON gerado
+
+```json
+{
+  "source_file": "Andamento - Projetos.xlsx",
+  "source_sheet": "filtrada",
+  "generated_at": "2026-04-22T10:30:00-03:00",
+  "row_count": 39,
+  "records": [
+    {
+      "Proposta": "0619/25 BNN A",
+      "Cliente": "Empresa Exemplo",
+      "Produto": "Formação de Gestores",
+      "Status": "Em andamento",
+      "Início": "2026-01-19",
+      "Término": "2026-07-19",
+      "Quantidade Livro": 80,
+      "Valor Total": 2800.0
+    }
+  ]
+}
+```
+
+**Regras aplicadas automaticamente pelo `gerar_dashboard_json.py`:**
+
+| Entrada | Saída |
+|---------|-------|
+| Célula vazia, `""`, `-` | `null` |
+| `NaN`, `Infinity` | `null` |
+| Data/hora (`datetime`) | `"YYYY-MM-DD"` |
+| Float inteiro (`80.0`) | `80` |
+| Texto com `_x000D_` | Texto limpo |
+| Nomes das colunas | Preservados exatamente como no Excel |
+
+### Retry no push
+
+O monitor tenta o push até **4 vezes** com backoff exponencial (2 s → 4 s → 8 s → 16 s) antes de registrar falha no log.
+
+---
+
+## Requisitos
+
+| Item | Detalhe |
+|------|---------|
+| Python 3.10+ | `pip install openpyxl` |
+| Git instalado e autenticado | `credential.helper manager` |
+| Aba `filtrada` no Excel | Com cabeçalhos na primeira linha |
+| PC ligado com monitor rodando | Necessário para sincronização automática |
+| Conexão com a internet | Para git push ao GitHub |
+
+---
+
+## Solução de problemas
+
+**Site mostra dados antigos**  
+Verifique se `pythonw.exe` aparece no Gerenciador de Tarefas. Se não, inicie o monitor. Abra `log_atualizacao.txt` para ver o último erro registrado.
+
+**Monitor não inicia pelo VBS**  
+Abra um terminal e rode `python monitor_excel.py` diretamente para ver a mensagem de erro completa.
+
+**Push falha — erro de autenticação**  
+Execute `git config --global credential.helper manager` e faça um push manual para salvar as credenciais.
+
+**Aba `filtrada` não encontrada**  
+O Excel precisa ter uma aba com exatamente esse nome (minúsculas, sem espaços).
+
+**`openpyxl` não instalado**  
+`pip install openpyxl`
+
+**Planilha não encontrada pelo monitor**  
+Confirme que o caminho no `monitor_excel.py` está correto:
+```python
+EXCEL_PATH = Path(r"C:\Users\Consultor\Aquila\ADM - EGA - General\Arquivos Referencias\Escola\Andamento - Projetos.xlsx")
+```
