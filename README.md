@@ -10,19 +10,18 @@ Os dados saem direto da planilha Excel e chegam ao site automaticamente — sem 
 ```
 Você salva o Excel
       ↓  até 30 s
-Monitor detecta a mudança
+monitor_excel.py detecta a mudança (hash MD5)
       ↓  instantâneo
-Planilha convertida em JSON
+gerar_dashboard_json.py converte a planilha em JSON
       ↓  instantâneo
-Git commit + push → GitHub
-      ↓  ~60 s  (GitHub Pages publica)
-Site detecta o JSON novo
+git commit + push → GitHub
+      ↓  ~60 s  (GitHub Pages republica o site)
+Site detecta o JSON novo via fetch()
       ↓  até 20 s  (polling automático)
-TV exibe os dados atualizados
+TV exibe os dados atualizados — sem F5
 ```
 
-**Tempo total:** 1 a 2 minutos após salvar o Excel.  
-Nenhuma ação manual necessária além de salvar a planilha.
+**Tempo total:** 1 a 2 minutos após salvar o Excel.
 
 ---
 
@@ -40,30 +39,33 @@ Troca automática a cada **30 segundos** · barra de progresso · navegação po
 
 ---
 
-## Estrutura de arquivos
+## Arquivos do sistema
 
-```
-Repositório GitHub (dashboard-tv)
-├── dashboard_tv_slides_auto.html   → Site completo (HTML + CSS + JS)
-├── dashboard_tv_data.json          → Dados gerados automaticamente (não editar)
-├── gerar_dashboard_json.py         → Converte Excel → JSON (chamado pelo monitor)
-├── atualizar_dashboard.bat         → Atualização manual forçada
-├── monitor_excel.py                → Script do monitor (copiar para pasta Scripts)
-├── iniciar_monitor_oculto.vbs      → Launcher sem janela (copiar para pasta Scripts)
-├── processo.md                     → Documentação técnica detalhada do fluxo
-└── log_atualizacao.txt             → Registro de todas as sincronizações
+### Repositório GitHub
 
-Fora do repositório — PC local
-C:\Users\Consultor\Scripts\dashboard-monitor\
-├── monitor_excel.py                → Cópia do repositório
-└── iniciar_monitor_oculto.vbs      → Cópia do repositório
-```
+| Arquivo | Função |
+|---------|--------|
+| `dashboard_tv_slides_auto.html` | Site completo (HTML + CSS + JS) |
+| `dashboard_tv_data.json` | Dados gerados automaticamente — não editar manualmente |
+| `gerar_dashboard_json.py` | Converte Excel → JSON com formato correto |
+| `atualizar_dashboard.bat` | Atualização manual forçada |
+| `monitor_excel.py` | Script do monitor — copiar para a pasta Scripts |
+| `iniciar_monitor_oculto.vbs` | Launcher sem janela — copiar para a pasta Scripts |
+| `log_atualizacao.txt` | Registro gerado automaticamente de todas as sincronizações |
+
+### PC local (fora do repositório)
+
+| Caminho | Função |
+|---------|--------|
+| `C:\Users\Consultor\Scripts\dashboard-monitor\monitor_excel.py` | Monitor rodando em segundo plano |
+| `C:\Users\Consultor\Scripts\dashboard-monitor\iniciar_monitor_oculto.vbs` | Launcher — duplo clique para iniciar oculto |
+| `C:\Users\Consultor\Aquila\ADM - EGA - General\Arquivos Referencias\Escola\Andamento - Projetos.xlsx` | Planilha monitorada |
 
 ---
 
 ## Configuração inicial (fazer uma vez)
 
-### 1. Dependência Python
+### 1. Instalar dependência Python
 
 ```
 pip install openpyxl
@@ -71,10 +73,10 @@ pip install openpyxl
 
 ### 2. Copiar os scripts do monitor
 
-Após clonar o repositório, copie estes dois arquivos para a pasta do monitor:
+Após clonar o repositório, copie para a pasta do monitor:
 
 ```
-monitor_excel.py          →  C:\Users\Consultor\Scripts\dashboard-monitor\
+monitor_excel.py           →  C:\Users\Consultor\Scripts\dashboard-monitor\
 iniciar_monitor_oculto.vbs →  C:\Users\Consultor\Scripts\dashboard-monitor\
 ```
 
@@ -105,32 +107,16 @@ git config --global credential.helper manager
 
 ## Uso diário
 
-### Iniciar o monitor agora
+**Iniciar o monitor agora** — duplo clique em `iniciar_monitor_oculto.vbs`.  
+Nenhuma janela aparece. O processo sobe completamente oculto.
 
-Duplo clique em:
-```
-C:\Users\Consultor\Scripts\dashboard-monitor\iniciar_monitor_oculto.vbs
-```
+**Verificar se está rodando** — Gerenciador de Tarefas (`Ctrl + Shift + Esc`) → aba **Detalhes** → procure `pythonw.exe`.
 
-Nenhuma janela aparece — o processo sobe oculto.
+**Encerrar o monitor** — Gerenciador de Tarefas → botão direito em `pythonw.exe` → **Finalizar tarefa**.
 
-### Verificar se está rodando
+**Forçar atualização manual** — duplo clique em `atualizar_dashboard.bat` no repositório local.
 
-**Gerenciador de Tarefas** (`Ctrl + Shift + Esc`) → aba **Detalhes** → procure `pythonw.exe`.
-
-### Encerrar o monitor
-
-**Gerenciador de Tarefas** → clique com botão direito em `pythonw.exe` → **Finalizar tarefa**.
-
-### Forçar atualização manual
-
-Duplo clique em `atualizar_dashboard.bat` no repositório local.
-
-### Ver o log
-
-```
-[repositório]\log_atualizacao.txt
-```
+**Ver o log** — abra `log_atualizacao.txt` na raiz do repositório local.
 
 ---
 
@@ -140,30 +126,17 @@ Duplo clique em `atualizar_dashboard.bat` no repositório local.
 2. `F11` para tela cheia
 3. Os slides rotacionam automaticamente — nenhuma interação necessária
 
-O site verifica o JSON a cada **20 segundos**. Quando há dados novos, atualiza todos os slides automaticamente, sem F5.
+O site verifica o JSON a cada **20 segundos** com `cache: 'no-store'` (ignora cache do navegador). Quando detecta dados novos, atualiza todos os slides automaticamente e exibe o badge **"Modo dinâmico · JSON atualizado"**. Se o fetch falhar (sem internet, GitHub fora do ar), mantém os últimos dados com o badge **"usando cache local"**.
 
 ---
 
-## Componentes técnicos
+## Detalhes técnicos
 
-### `monitor_excel.py`
+### Por que o monitor usa MD5 e não data de modificação?
 
-- Loop a cada **30 s**, calcula hash MD5 do Excel
-- Se o hash mudou → chama `gerar_dashboard_json.py` → git commit + push
-- Retry automático no push (4 tentativas, backoff exponencial: 2s / 4s / 8s / 16s)
-- Usa `pythonw.exe` quando iniciado pelo `.vbs` → sem janela, sem ícone na taskbar
+O Excel atualiza a data de modificação do arquivo mesmo em saves automáticos sem alteração de conteúdo. O hash MD5 garante que a sincronização só dispara quando os dados realmente mudam.
 
-### `gerar_dashboard_json.py`
-
-Converte a aba `filtrada` do Excel em JSON válido:
-
-- Células vazias, `""`, `-` → `null`
-- `NaN` / `Infinity` → `null`  
-- Datas → `YYYY-MM-DD` (sem hora)
-- Inteiros sem casas decimais (`80.0` → `80`)
-- Nomes das colunas preservados exatamente como estão no Excel
-
-Saída:
+### Formato do JSON gerado
 
 ```json
 {
@@ -171,17 +144,35 @@ Saída:
   "source_sheet": "filtrada",
   "generated_at": "2026-04-22T10:30:00-03:00",
   "row_count": 39,
-  "records": [ { "Proposta": "...", "Cliente": "...", ... } ]
+  "records": [
+    {
+      "Proposta": "0619/25 BNN A",
+      "Cliente": "Empresa Exemplo",
+      "Produto": "Formação de Gestores",
+      "Status": "Em andamento",
+      "Início": "2026-01-19",
+      "Término": "2026-07-19",
+      "Quantidade Livro": 80,
+      "Valor Total": 2800.0
+    }
+  ]
 }
 ```
 
-### `dashboard_tv_slides_auto.html`
+**Regras aplicadas automaticamente pelo `gerar_dashboard_json.py`:**
 
-- `fetch()` com `cache: 'no-store'` a cada 20 s
-- Cache local automático — se o fetch falhar, mantém os últimos dados
-- Fallback em dados embutidos no HTML — funciona offline
-- Reinício completo a cada 6 horas (evita memory leak em exibição 24/7)
-- Timezone São Paulo em todos os cálculos de data
+| Entrada | Saída |
+|---------|-------|
+| Célula vazia, `""`, `-` | `null` |
+| `NaN`, `Infinity` | `null` |
+| Data/hora (`datetime`) | `"YYYY-MM-DD"` |
+| Float inteiro (`80.0`) | `80` |
+| Texto com `_x000D_` | Texto limpo |
+| Nomes das colunas | Preservados exatamente como no Excel |
+
+### Retry no push
+
+O monitor tenta o push até **4 vezes** com backoff exponencial (2 s → 4 s → 8 s → 16 s) antes de registrar falha no log.
 
 ---
 
@@ -190,30 +181,32 @@ Saída:
 | Item | Detalhe |
 |------|---------|
 | Python 3.10+ | `pip install openpyxl` |
-| Git autenticado | `credential.helper manager` |
+| Git instalado e autenticado | `credential.helper manager` |
 | Aba `filtrada` no Excel | Com cabeçalhos na primeira linha |
-| PC ligado | Monitor precisa estar rodando |
-| Internet | Para o push ao GitHub |
+| PC ligado com monitor rodando | Necessário para sincronização automática |
+| Conexão com a internet | Para git push ao GitHub |
 
 ---
 
 ## Solução de problemas
 
-**Site mostra dados antigos (de março)**  
-→ O monitor não está rodando ou o push está falhando. Verifique `log_atualizacao.txt` e confirme `pythonw.exe` no Gerenciador de Tarefas.
+**Site mostra dados antigos**  
+Verifique se `pythonw.exe` aparece no Gerenciador de Tarefas. Se não, inicie o monitor. Abra `log_atualizacao.txt` para ver o último erro registrado.
 
 **Monitor não inicia pelo VBS**  
-→ Execute `python monitor_excel.py` direto no terminal para ver o erro completo.
+Abra um terminal e rode `python monitor_excel.py` diretamente para ver a mensagem de erro completa.
 
-**Push falha — autenticação**  
-→ `git config --global credential.helper manager` e faça um push manual para salvar as credenciais.
+**Push falha — erro de autenticação**  
+Execute `git config --global credential.helper manager` e faça um push manual para salvar as credenciais.
 
 **Aba `filtrada` não encontrada**  
-→ O Excel precisa ter uma aba com exatamente esse nome (minúsculas).
+O Excel precisa ter uma aba com exatamente esse nome (minúsculas, sem espaços).
 
 **`openpyxl` não instalado**  
-→ `pip install openpyxl`
+`pip install openpyxl`
 
----
-
-Documentação técnica completa do fluxo: [`processo.md`](processo.md)
+**Planilha não encontrada pelo monitor**  
+Confirme que o caminho no `monitor_excel.py` está correto:
+```python
+EXCEL_PATH = Path(r"C:\Users\Consultor\Aquila\ADM - EGA - General\Arquivos Referencias\Escola\Andamento - Projetos.xlsx")
+```
