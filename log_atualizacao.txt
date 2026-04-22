@@ -1,0 +1,224 @@
+22/04/2026 12:04:22,68 - JSON atualizado e enviado 
+22/04/2026 12:09:12,46 - JSON atualizado e enviado 
+22/04/2026 12:14:14,03 - JSON atualizado e enviado 
+22/04/2026 12:19:12,35 - JSON atualizado e enviado 
+22/04/2026 12:24:11,58 - JSON atualizado e enviado 
+22/04/2026 12:29:11,71 - JSON atualizado e enviado 
+22/04/2026 12:34:11,52 - JSON atualizado e enviado 
+22/04/2026 12:39:11,74 - JSON atualizado e enviado 
+22/04/2026 12:44:11,94 - JSON atualizado e enviado 
+22/04/2026 12:49:11,63 - JSON atualizado e enviado 
+22/04/2026 12:54:13,20 - JSON atualizado e enviado 
+22/04/2026 12:59:11,95 - JSON atualizado e enviado 
+22/04/2026 13:04:19,04 - JSON atualizado e enviado 
+22/04/2026 13:09:11,26 - JSON atualizado e enviado 
+22/04/2026 13:14:10,48 - JSON atualizado e enviado 
+22/04/2026 13:19:10,90 - JSON atualizado e enviado 
+22/04/2026 13:25:08,83 - JSON atualizado e enviado 
+22/04/2026 13:29:33,88 - JSON atualizado e enviado 
+22/04/2026 13:34:27,30 - JSON atualizado e enviado 
+22/04/2026 13:40:15,04 - JSON atualizado e enviado 
+22/04/2026 13:44:23,82 - JSON atualizado e enviado 
+22/04/2026 13:49:25,09 - JSON atualizado e enviado 
+22/04/2026 13:54:50,84 - JSON atualizado e enviado 
+22/04/2026 14:00:34,98 - JSON atualizado e enviado 
+22/04/2026 14:04:11,00 - JSON atualizado e enviado 
+22/04/2026 14:09:10,77 - JSON atualizado e enviado 
+22/04/2026 14:09:18,62 - JSON atualizado e enviado 
+22/04/2026 14:14:12,14 - JSON atualizado e enviado 
+ 
+============================================================ 
+[22/04/2026 14:19:08,42] INICIO 
+[22/04/2026 14:19:08,44] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+M	atualizar_dashboard.bat
+M	dashboard_tv_data.json
+M	dashboard_tv_slides_auto.html
+M	gerar_dashboard_json.py
+Your branch and 'origin/main' have diverged,
+and have 15 and 4 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+error: Your local changes to the following files would be overwritten by merge:
+  atualizar_dashboard.bat dashboard_tv_data.json dashboard_tv_slides_auto.html gerar_dashboard_json.py
+Merge with strategy ort failed.
+[22/04/2026 14:19:09,39] AVISO: git pull falhou (sem internet ou sem atualizacoes
+[22/04/2026 14:19:09,41] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:19:10,36] JSON gerado com sucesso 
+[main 68bca52] dados: atualizar JSON 22/04/2026 14:19:10,46
+ 4 files changed, 130 insertions(+), 99 deletions(-)
+[22/04/2026 14:19:10,46] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+ ! [rejected]        main -> main (non-fast-forward)
+error: failed to push some refs to 'https://github.com/pablo-afterlife/dashboard-tv.git'
+hint: Updates were rejected because the tip of your current branch is behind
+hint: its remote counterpart. If you want to integrate the remote changes,
+hint: use 'git pull' before pushing again.
+hint: See the 'Note about fast-forwards' in 'git push --help' for details.
+[22/04/2026 14:19:10,46] ERRO: git push falhou - verifique credenciais do git 
+ 
+============================================================ 
+[22/04/2026 14:19:31,61] INICIO 
+[22/04/2026 14:19:31,62] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch and 'origin/main' have diverged,
+and have 16 and 4 different commits each, respectively.
+  (use "git pull" if you want to integrate the remote branch with yours)
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Auto-merging dashboard_tv_data.json
+Merge made by the 'ort' strategy.
+[22/04/2026 14:19:33,07] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:19:34,92] JSON gerado com sucesso 
+[main 1964c1c] dados: atualizar JSON 22/04/2026 14:19:35,01
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:19:35,01] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   f1ef46d..1964c1c  main -> main
+[22/04/2026 14:19:35,01] Push enviado para o GitHub 
+[22/04/2026 14:19:37,24] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:21:51,66] INICIO 
+[22/04/2026 14:21:51,67] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:21:52,31] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:21:52,78] JSON gerado com sucesso 
+[main 360ae29] dados: atualizar JSON 22/04/2026 14:21:52,88
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:21:52,88] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   1964c1c..360ae29  main -> main
+[22/04/2026 14:21:52,88] Push enviado para o GitHub 
+[22/04/2026 14:21:54,82] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:24:08,45] INICIO 
+[22/04/2026 14:24:08,47] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:24:09,10] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:24:09,62] JSON gerado com sucesso 
+[main c9b7d29] dados: atualizar JSON 22/04/2026 14:24:09,71
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:24:09,71] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   360ae29..c9b7d29  main -> main
+[22/04/2026 14:24:09,71] Push enviado para o GitHub 
+[22/04/2026 14:24:11,61] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:24:22,44] INICIO 
+[22/04/2026 14:24:22,46] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:24:23,09] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:24:23,64] JSON gerado com sucesso 
+[main d75be3e] dados: atualizar JSON 22/04/2026 14:24:23,72
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:24:23,72] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   c9b7d29..d75be3e  main -> main
+[22/04/2026 14:24:23,72] Push enviado para o GitHub 
+[22/04/2026 14:24:25,81] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:29:08,50] INICIO 
+[22/04/2026 14:29:08,52] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:29:09,42] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:29:11,51] JSON gerado com sucesso 
+[main 666eeed] dados: atualizar JSON 22/04/2026 14:29:12,01
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:29:12,01] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   d75be3e..666eeed  main -> main
+[22/04/2026 14:29:12,01] Push enviado para o GitHub 
+[22/04/2026 14:29:15,17] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:34:08,49] INICIO 
+[22/04/2026 14:34:08,51] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:34:09,38] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:34:10,29] JSON gerado com sucesso 
+[main a2ed098] dados: atualizar JSON 22/04/2026 14:34:10,38
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:34:10,38] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   666eeed..a2ed098  main -> main
+[22/04/2026 14:34:10,38] Push enviado para o GitHub 
+[22/04/2026 14:34:12,73] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:39:10,02] INICIO 
+[22/04/2026 14:39:10,44] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:39:19,21] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:39:34,69] JSON gerado com sucesso 
+[main 9aad112] dados: atualizar JSON 22/04/2026 14:39:34,89
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:39:34,90] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   a2ed098..9aad112  main -> main
+[22/04/2026 14:39:34,90] Push enviado para o GitHub 
+[22/04/2026 14:39:40,55] CONCLUIDO com sucesso 
+ 
+============================================================ 
+[22/04/2026 14:44:08,55] INICIO 
+[22/04/2026 14:44:08,57] Pasta OK: C:\Users\Consultor\OneDrive - Aquila\SITE AQUILA\teste123\dashboard_tv_slides_pacote\dashboard_tv_slides_pacote 
+Already on 'main'
+Your branch is up to date with 'origin/main'.
+From https://github.com/pablo-afterlife/dashboard-tv
+ * branch            main       -> FETCH_HEAD
+Already up to date.
+[22/04/2026 14:44:09,42] Excel encontrado 
+JSON gerado com sucesso: dashboard_tv_data.json
+Registros exportados: 39
+[22/04/2026 14:44:10,47] JSON gerado com sucesso 
+[main d4a3882] dados: atualizar JSON 22/04/2026 14:44:10,55
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+[22/04/2026 14:44:10,55] Commit criado 
+To https://github.com/pablo-afterlife/dashboard-tv.git
+   9aad112..d4a3882  main -> main
+[22/04/2026 14:44:10,55] Push enviado para o GitHub 
+[22/04/2026 14:44:12,74] CONCLUIDO com sucesso 
