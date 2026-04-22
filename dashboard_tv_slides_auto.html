@@ -3206,7 +3206,7 @@ tickProgress();
 loadData();
 updateClock();
 setInterval(updateClock, 1000);
-setInterval(loadData, 60000);
+setInterval(loadData, 20000);
 setInterval(updateLastUpdate, 30000);
 // Reinício completo a cada 6 horas para evitar memory leak em exibição 24/7
 setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
