@@ -435,7 +435,8 @@
   <div class="bottom-ui">
     <div class="progress"><div id="progressFill"></div></div>
     <div class="dots" id="dots"></div>
-    <div class="hint">Troca automática · 12s por slide</div>
+    <div class="hint">Troca automática · 30s por slide</div>
+    <span class="hint" id="lastUpdate" style="opacity:0.6; font-style:italic;">—</span>
   </div>
 </div>
 
@@ -2758,9 +2759,11 @@ const EMBEDDED_DATA = {
     }
   ]
 };
-const SLIDE_MS = 12000;
+const SLIDE_MS = 30000;
 let currentSlide = 0;
 let lastSwitch = Date.now();
+let lastGoodData = EMBEDDED_DATA;
+let lastFetchTime = null;
 
 function num(v) {
   const n = Number(v);
@@ -3145,12 +3148,24 @@ function renderAll(data, modeText) {
 async function loadData() {
   try {
     const res = await fetch(`dashboard_tv_data.json?ts=${Date.now()}`, { cache:'no-store' });
-    if (!res.ok) throw new Error('erro');
+    if (!res.ok) throw new Error('http ' + res.status);
     const data = await res.json();
+    lastGoodData = data;
+    lastFetchTime = Date.now();
     renderAll(data, 'Modo dinâmico · JSON atualizado');
   } catch (e) {
-    renderAll(EMBEDDED_DATA, 'Modo estático · fallback embutido');
+    renderAll(lastGoodData, lastFetchTime ? 'Modo dinâmico · usando cache local' : 'Modo estático · fallback embutido');
   }
+  updateLastUpdate();
+}
+function updateLastUpdate() {
+  const el = document.getElementById('lastUpdate');
+  if (!el) return;
+  if (!lastFetchTime) { el.textContent = 'Base embutida'; return; }
+  const mins = Math.floor((Date.now() - lastFetchTime) / 60000);
+  if (mins < 1) el.textContent = 'Atualizado agora';
+  else if (mins === 1) el.textContent = 'Atualizado há 1 min';
+  else el.textContent = `Atualizado há ${mins} min`;
 }
 function updateClock() {
   document.getElementById('clockNow').textContent = new Date().toLocaleString('pt-BR', {
@@ -3192,6 +3207,9 @@ loadData();
 updateClock();
 setInterval(updateClock, 1000);
 setInterval(loadData, 60000);
+setInterval(updateLastUpdate, 30000);
+// Reinício completo a cada 6 horas para evitar memory leak em exibição 24/7
+setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
 </script>
 </body>
 </html>

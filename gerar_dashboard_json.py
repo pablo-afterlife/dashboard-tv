@@ -24,7 +24,7 @@ def clean_value(value):
             return int(round(value))
         return value
     if isinstance(value, str):
-        value = value.strip()
+        value = value.replace('_x000D_', '').strip()
         if value == "" or value == "-":
             return None
         return value
