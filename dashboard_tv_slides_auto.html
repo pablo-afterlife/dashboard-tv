@@ -3287,7 +3287,8 @@ function renderFinanceiro(records, today) {
 // ─── MAIN RENDER ───
 function renderAll(data) {
   const today = spToday();
-  const raw = data.records || [];
+  // Suporta array puro [...] ou objeto {records:[...]}
+  const raw = Array.isArray(data) ? data : (data.records || []);
   // Normalize all records to unified format
   const records = raw.map(norm);
   renderOverview(records, today);
