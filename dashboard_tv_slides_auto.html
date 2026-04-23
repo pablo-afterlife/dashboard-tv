@@ -1,445 +1,501 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>TV Slides - Projetos e Próximos Inícios</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Escola de Gestão — Dashboard TV</title>
 <style>
-  :root {
-    --bg1: #07111f;
-    --bg2: #0f1f39;
-    --panel: rgba(15, 24, 45, 0.88);
-    --panel-2: rgba(20, 32, 58, 0.95);
-    --line: rgba(255,255,255,0.08);
-    --text: #eef4ff;
-    --muted: #9eb1d7;
-    --accent: #57a4ff;
-    --accent2: #8a7dff;
-    --ok: #3ddc97;
-    --warn: #f4c75b;
-    --danger: #ff6b6b;
-    --shadow: 0 24px 70px rgba(0,0,0,.35);
-  }
-  * { box-sizing: border-box; }
-  html, body { width:100%; height:100%; margin:0; overflow:hidden; background: radial-gradient(circle at top left, #183460 0%, var(--bg1) 36%, #050b15 100%); color:var(--text); font-family: Inter, Segoe UI, Arial, sans-serif; }
-  .tv {
-    width:100vw; height:100vh; position:relative; overflow:hidden;
-    background:
-      radial-gradient(circle at 15% 10%, rgba(87,164,255,.16), transparent 28%),
-      radial-gradient(circle at 85% 10%, rgba(138,125,255,.14), transparent 24%);
-  }
-  .topbar {
-    position:absolute; left:24px; right:24px; top:18px; z-index:40;
-    display:flex; align-items:center; justify-content:space-between; gap:16px;
-  }
-  .brand h1 { margin:0; font-size:clamp(24px, 2vw, 38px); letter-spacing:.2px; }
-  .brand p { margin:6px 0 0; color:var(--muted); font-size:14px; }
-  .chips { display:flex; gap:10px; flex-wrap:wrap; justify-content:flex-end; }
-  .chip {
-    padding:10px 14px; border-radius:999px; background:rgba(255,255,255,.06);
-    border:1px solid var(--line); color:var(--text); font-size:13px;
-    display:inline-flex; gap:8px; align-items:center; backdrop-filter: blur(10px);
-  }
-  .dot { width:10px; height:10px; border-radius:50%; display:inline-block; }
-  .dot.blue { background:var(--accent); }
-  .dot.green { background:var(--ok); }
-  .dot.yellow { background:var(--warn); }
-  .slides {
-    width:100%; height:100%;
-    position:relative;
-  }
-  .slide {
-    position:absolute; inset:0;
-    padding:105px 28px 76px;
-    opacity:0; transform: translateX(40px) scale(.985);
-    transition: opacity .7s ease, transform .7s ease;
-    pointer-events:none;
-  }
-  .slide.active {
-    opacity:1; transform: translateX(0) scale(1); pointer-events:auto;
-  }
-  .slide-title {
-    display:flex; align-items:flex-end; justify-content:space-between; gap:18px;
-    margin-bottom:18px;
-  }
-  .slide-title h2 { margin:0; font-size:clamp(30px, 2.7vw, 54px); line-height:1; }
-  .slide-title p { margin:8px 0 0; color:var(--muted); font-size:16px; }
-  .kpi-row {
-    display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:14px; margin-bottom:14px;
-  }
-  .kpi {
-    background:linear-gradient(180deg, rgba(255,255,255,.05), rgba(255,255,255,.02));
-    border:1px solid var(--line);
-    border-radius:24px;
-    padding:18px 20px;
-    box-shadow:var(--shadow);
-    backdrop-filter: blur(14px);
-  }
-  .kpi .label { color:var(--muted); font-size:13px; text-transform:uppercase; letter-spacing:.08em; }
-  .kpi .value { margin-top:10px; font-weight:800; font-size:clamp(28px, 2.4vw, 44px); line-height:1; }
-  .kpi .sub { margin-top:8px; color:var(--muted); font-size:13px; }
-  .hero-grid {
-    display:grid; grid-template-columns:1.08fr .92fr; gap:16px; height:calc(100% - 132px);
-  }
-  .card {
-    background:linear-gradient(180deg, rgba(255,255,255,.045), rgba(255,255,255,.02));
-    border:1px solid var(--line);
-    border-radius:28px;
-    box-shadow:var(--shadow);
-    backdrop-filter: blur(14px);
-    overflow:hidden;
-  }
-  .card-head {
-    padding:18px 22px 0;
-    display:flex; align-items:flex-start; justify-content:space-between; gap:16px;
-  }
-  .card-head h3 { margin:0; font-size:22px; }
-  .card-head span { color:var(--muted); font-size:13px; }
-  .card-body { padding:18px 22px 22px; }
-  .hero {
-    height:100%; display:flex; flex-direction:column; justify-content:space-between;
-  }
-  .hero-main {
-    display:grid; grid-template-columns:1.1fr .9fr; gap:20px; align-items:stretch;
-  }
-  .hero-priority {
-    border-radius:24px; padding:24px;
-    background:
-      linear-gradient(135deg, rgba(87,164,255,.18), rgba(138,125,255,.12)),
-      rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.08);
-    min-height:305px;
-  }
-  .hero-priority .eyebrow {
-    color:#dbe8ff; text-transform:uppercase; letter-spacing:.1em; font-size:12px; opacity:.85;
-  }
-  .hero-priority .days {
-    margin-top:14px; font-size:clamp(72px, 6vw, 118px); font-weight:900; line-height:.9;
-  }
-  .hero-priority .days small {
-    font-size:24px; font-weight:700; display:block; margin-top:10px;
-  }
-  .hero-priority .client {
-    margin-top:20px; font-size:30px; font-weight:800; line-height:1.08;
-  }
-  .hero-priority .product {
-    margin-top:10px; font-size:18px; color:#d2ddf5; line-height:1.35;
-  }
-  .hero-priority .meta {
-    margin-top:18px; display:flex; flex-wrap:wrap; gap:10px;
-  }
-  .tag {
-    padding:8px 12px; border-radius:999px; font-size:13px; font-weight:700;
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.1);
-  }
-  .tag.ok { color:#d8ffed; background:rgba(61,220,151,.14); border-color:rgba(61,220,151,.2); }
-  .tag.warn { color:#fff0c2; background:rgba(244,199,91,.15); border-color:rgba(244,199,91,.2); }
-  .tag.danger { color:#ffd4d4; background:rgba(255,107,107,.15); border-color:rgba(255,107,107,.2); }
-  .alert-list { display:grid; gap:12px; }
-  .mini-alert {
-    padding:14px 16px; border-radius:18px;
-    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
-  }
-  .mini-alert .top {
-    display:flex; justify-content:space-between; gap:10px; align-items:flex-start; margin-bottom:8px;
-  }
-  .mini-alert strong { display:block; font-size:16px; line-height:1.2; }
-  .mini-alert .small { color:var(--muted); font-size:13px; line-height:1.35; }
-  .mini-alert .badge {
-    padding:6px 9px; border-radius:999px; font-size:12px; font-weight:800; white-space:nowrap;
-  }
-  .mini-alert .badge.future { background:rgba(87,164,255,.14); color:#dcecff; border:1px solid rgba(87,164,255,.2); }
-  .mini-alert .badge.overdue { background:rgba(255,107,107,.16); color:#ffd4d4; border:1px solid rgba(255,107,107,.22); }
-  .mini-alert .badge.soon { background:rgba(244,199,91,.16); color:#fff0c2; border:1px solid rgba(244,199,91,.2); }
-  .split {
-    display:grid; grid-template-columns:1fr 1fr; gap:14px; height:calc(100% - 84px);
-  }
-  .stack { display:grid; gap:14px; }
-  .list-item {
-    display:grid; grid-template-columns:110px 1fr 110px; gap:14px; align-items:center;
-    padding:14px 16px; border-radius:18px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
-  }
-  .date-box {
-    padding:12px 14px; border-radius:16px; background:rgba(255,255,255,.05);
-    text-align:center;
-  }
-  .date-box strong { font-size:26px; display:block; line-height:1; }
-  .date-box span { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; }
-  .list-item .main strong { display:block; font-size:16px; margin-bottom:4px; }
-  .list-item .main .small { color:var(--muted); font-size:13px; line-height:1.35; }
-  .list-item .side { text-align:right; font-size:13px; color:var(--muted); }
-  .side strong { color:var(--text); font-size:22px; line-height:1; display:block; }
-  .metrics-grid {
-    display:grid; grid-template-columns:1.05fr .95fr; gap:14px; height:calc(100% - 84px);
-  }
-  .metrics-stack { display:grid; gap:14px; }
-  .metric-box {
-    padding:18px 18px 20px; border-radius:22px; background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.06);
-  }
-  .metric-box .big { font-size:40px; font-weight:900; line-height:1; margin-top:10px; }
-  .meter {
-    width:100%; height:14px; border-radius:999px; overflow:hidden;
-    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.06); margin-top:12px;
-  }
-  .meter > div { height:100%; border-radius:inherit; background:linear-gradient(90deg, var(--accent), var(--accent2)); }
-  .table-wrap {
-    height:100%; overflow:hidden; border-radius:22px;
-    background:rgba(255,255,255,.03); border:1px solid rgba(255,255,255,.06);
-  }
-  table { width:100%; border-collapse:collapse; }
-  thead th {
-    padding:13px 14px; text-align:left; font-size:12px; text-transform:uppercase; letter-spacing:.08em;
-    color:var(--muted); border-bottom:1px solid var(--line);
-  }
-  tbody td {
-    padding:14px; border-bottom:1px solid rgba(255,255,255,.06); font-size:14px; vertical-align:top;
-  }
-  tbody tr:last-child td { border-bottom:none; }
-  .bar-list { display:grid; gap:12px; }
-  .bar-item { display:grid; grid-template-columns:1fr 110px; gap:12px; align-items:center; }
-  .bar-top { display:flex; justify-content:space-between; gap:10px; color:var(--text); font-size:14px; margin-bottom:7px; }
-  .bar-track {
-    width:100%; height:13px; border-radius:999px; overflow:hidden;
-    background:rgba(255,255,255,.06); border:1px solid rgba(255,255,255,.05);
-  }
-  .bar-fill {
-    height:100%; border-radius:inherit; background:linear-gradient(90deg, rgba(87,164,255,.95), rgba(138,125,255,.95));
-  }
-  .bar-value { text-align:right; color:var(--muted); font-size:13px; font-weight:700; }
-  .bottom-ui {
-    position:absolute; left:28px; right:28px; bottom:18px; z-index:45;
-    display:flex; align-items:center; justify-content:space-between; gap:18px;
-  }
-  .progress {
-    flex:1; height:8px; border-radius:999px; overflow:hidden;
-    background:rgba(255,255,255,.08); border:1px solid rgba(255,255,255,.06);
-  }
-  .progress > div {
-    width:0%; height:100%; border-radius:inherit;
-    background:linear-gradient(90deg, var(--accent), var(--accent2));
-    transition: width .25s linear;
-  }
-  .dots { display:flex; gap:10px; }
-  .dots button {
-    width:12px; height:12px; border-radius:50%; border:none; padding:0;
-    background:rgba(255,255,255,.22); cursor:pointer;
-  }
-  .dots button.active { background:var(--accent); box-shadow:0 0 0 6px rgba(87,164,255,.12); }
-  .hint { color:var(--muted); font-size:13px; white-space:nowrap; }
-  .muted { color:var(--muted); }
-  .mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; letter-spacing:-.02em; }
-  .two-col { display:grid; grid-template-columns:1fr 1fr; gap:14px; height:calc(100% - 84px); }
-  .session-tag {
-    display:inline-block; padding:4px 10px; border-radius:999px; margin:2px 3px 2px 0;
-    background:rgba(87,164,255,.12); border:1px solid rgba(87,164,255,.22);
-    color:#dcecff; font-size:12px; font-weight:600;
-  }
-  .trein-grid {
-    display:grid; grid-template-columns:1.1fr .9fr; gap:16px; height:calc(100% - 84px);
-  }
-  .hero-trein {
-    border-radius:24px; padding:24px;
-    background: linear-gradient(135deg, rgba(87,164,255,.18), rgba(138,125,255,.12)), rgba(255,255,255,.03);
-    border:1px solid rgba(255,255,255,.08);
-    height:100%; display:flex; flex-direction:column; gap:14px;
-  }
-  .hero-trein .eyebrow { color:#dbe8ff; text-transform:uppercase; letter-spacing:.1em; font-size:12px; opacity:.85; }
-  .hero-trein .dias { font-size:clamp(64px, 5.5vw, 104px); font-weight:900; line-height:.9; }
-  .hero-trein .dias small { font-size:20px; font-weight:700; display:block; margin-top:8px; color:var(--muted); }
-  .hero-trein .cli { font-size:clamp(22px, 1.8vw, 32px); font-weight:800; line-height:1.1; }
-  .hero-trein .prod { font-size:17px; color:#d2ddf5; line-height:1.35; }
-  .hero-trein .sess-lbl { font-size:12px; color:var(--muted); text-transform:uppercase; letter-spacing:.07em; }
+:root {
+  --bg: #030b17;
+  --surface: rgba(255,255,255,0.038);
+  --surface-hi: rgba(255,255,255,0.065);
+  --border: rgba(255,255,255,0.08);
+  --border-hi: rgba(255,255,255,0.13);
+  --text: #f0f6ff;
+  --muted: #8ba3c4;
+  --soft: #4d6680;
+  --blue: #4f9cf9;
+  --blue-dim: rgba(79,156,249,0.14);
+  --green: #22d3a3;
+  --green-dim: rgba(34,211,163,0.14);
+  --yellow: #fbbf24;
+  --yellow-dim: rgba(251,191,36,0.14);
+  --red: #f87171;
+  --red-dim: rgba(248,113,113,0.14);
+  --orange: #fb923c;
+  --orange-dim: rgba(251,146,60,0.14);
+  --purple: #a78bfa;
+  --purple-dim: rgba(167,139,250,0.14);
+  --shadow: 0 4px 24px rgba(0,0,0,0.45);
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body {
+  width: 100%; height: 100%;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+.tv {
+  width: 100vw; height: 100vh;
+  position: relative;
+  background:
+    radial-gradient(ellipse 60% 40% at 15% -5%, rgba(79,156,249,0.1) 0%, transparent 60%),
+    radial-gradient(ellipse 40% 30% at 85% -5%, rgba(167,139,250,0.08) 0%, transparent 55%),
+    var(--bg);
+}
+
+/* ─── TOP BAR ─── */
+.topbar {
+  position: absolute; top: 0; left: 0; right: 0; z-index: 100;
+  height: 58px; padding: 0 24px;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px;
+  background: rgba(3,11,23,0.92);
+  border-bottom: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-mark {
+  width: 34px; height: 34px; border-radius: 9px; flex-shrink: 0;
+  background: linear-gradient(135deg, var(--blue) 0%, var(--purple) 100%);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 17px; font-weight: 900; color: #fff;
+}
+.brand-name { font-size: 15px; font-weight: 700; letter-spacing: 0.01em; }
+.brand-sub { font-size: 11px; color: var(--muted); margin-top: 1px; }
+.topbar-center { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: center; }
+.slide-label {
+  padding: 5px 12px; border-radius: 999px;
+  background: var(--blue-dim); border: 1px solid rgba(79,156,249,0.25);
+  font-size: 12px; font-weight: 700; color: var(--blue);
+  transition: all 0.4s ease;
+}
+.topbar-right { display: flex; align-items: center; gap: 16px; }
+.live-badge {
+  display: flex; align-items: center; gap: 6px;
+  padding: 5px 11px; border-radius: 999px;
+  background: var(--green-dim); border: 1px solid rgba(34,211,163,0.22);
+  font-size: 11px; font-weight: 700; color: var(--green);
+}
+.blink { width: 7px; height: 7px; border-radius: 50%; background: var(--green); animation: blink 1.5s ease infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:.2;} }
+.clock { font-size: 20px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.clock-date { font-size: 11px; color: var(--muted); text-align: right; margin-top: 1px; }
+
+/* ─── SLIDES ─── */
+.slides { position: absolute; inset: 58px 0 48px 0; overflow: hidden; }
+.slide {
+  position: absolute; inset: 0; padding: 16px 22px;
+  display: flex; flex-direction: column; gap: 12px;
+  opacity: 0; transform: translateX(28px) scale(0.992);
+  transition: opacity 0.55s ease, transform 0.55s ease;
+  pointer-events: none;
+}
+.slide.active { opacity: 1; transform: translateX(0) scale(1); pointer-events: auto; }
+
+/* ─── SLIDE HEADER ─── */
+.s-header {
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.s-header-left { display: flex; align-items: center; gap: 12px; }
+.s-icon {
+  width: 40px; height: 40px; border-radius: 11px; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 19px;
+}
+.s-title { font-size: clamp(18px, 1.9vw, 28px); font-weight: 800; line-height: 1; }
+.s-subtitle { font-size: 12px; color: var(--muted); margin-top: 3px; }
+.s-badge {
+  padding: 5px 13px; border-radius: 999px;
+  background: var(--surface-hi); border: 1px solid var(--border-hi);
+  font-size: 12px; font-weight: 700; color: var(--muted);
+}
+
+/* ─── KPI ROW ─── */
+.kpi-row { display: grid; gap: 10px; flex-shrink: 0; }
+.kpi-row.c4 { grid-template-columns: repeat(4,1fr); }
+.kpi-row.c3 { grid-template-columns: repeat(3,1fr); }
+.kpi-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 14px 18px;
+  position: relative; overflow: hidden;
+}
+.kpi-card::after {
+  content: ''; position: absolute; top: 0; left: 0; right: 0; height: 2px;
+  border-radius: 14px 14px 0 0;
+}
+.kpi-card.c-blue::after { background: var(--blue); }
+.kpi-card.c-green::after { background: var(--green); }
+.kpi-card.c-yellow::after { background: var(--yellow); }
+.kpi-card.c-red::after { background: var(--red); }
+.kpi-card.c-orange::after { background: var(--orange); }
+.kpi-card.c-purple::after { background: var(--purple); }
+.kpi-lbl { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); }
+.kpi-val {
+  font-size: clamp(26px, 3.2vw, 48px); font-weight: 900; line-height: 1;
+  margin-top: 7px; font-variant-numeric: tabular-nums;
+}
+.kpi-val.c-blue { color: var(--blue); }
+.kpi-val.c-green { color: var(--green); }
+.kpi-val.c-yellow { color: var(--yellow); }
+.kpi-val.c-red { color: var(--red); }
+.kpi-val.c-orange { color: var(--orange); }
+.kpi-val.c-purple { color: var(--purple); }
+.kpi-val.sm { font-size: clamp(17px, 2vw, 28px); }
+.kpi-sub { font-size: 11px; color: var(--muted); margin-top: 5px; }
+
+/* ─── PANELS ─── */
+.panel {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.panel-head {
+  padding: 11px 16px;
+  border-bottom: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: space-between;
+  flex-shrink: 0;
+}
+.panel-head-title {
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em; color: var(--muted);
+  display: flex; align-items: center; gap: 6px;
+}
+.panel-count {
+  font-size: 11px; font-weight: 700;
+  padding: 2px 8px; border-radius: 999px;
+  background: var(--surface-hi); color: var(--soft);
+}
+.panel-body { flex: 1; min-height: 0; }
+.scroll-y { overflow-y: auto; max-height: 100%; }
+.scroll-y::-webkit-scrollbar { width: 3px; }
+.scroll-y::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+
+/* ─── GRID LAYOUTS ─── */
+.grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.grid-lh { display: grid; grid-template-columns: 1.55fr 1fr; gap: 12px; }
+.col { display: flex; flex-direction: column; gap: 12px; }
+
+/* ─── TABLE ─── */
+.dtable { width: 100%; border-collapse: collapse; font-size: clamp(10.5px, 1.05vw, 13.5px); }
+.dtable thead th {
+  padding: 9px 13px;
+  text-align: left; white-space: nowrap;
+  font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .07em;
+  color: var(--soft); border-bottom: 1px solid var(--border);
+}
+.dtable tbody tr { border-bottom: 1px solid rgba(255,255,255,0.035); }
+.dtable tbody tr:last-child { border-bottom: none; }
+.dtable tbody tr:hover { background: rgba(255,255,255,0.025); }
+.dtable td { padding: 9px 13px; vertical-align: middle; }
+.dtable td.r { text-align: right; }
+.dtable td.c { text-align: center; }
+
+/* ─── STATUS PILLS ─── */
+.pill {
+  display: inline-flex; align-items: center; gap: 4px;
+  padding: 3px 9px; border-radius: 999px;
+  font-size: 10px; font-weight: 800; white-space: nowrap;
+  letter-spacing: .03em; border: 1px solid;
+}
+.pill.green  { background: var(--green-dim);  color: #6efad7; border-color: rgba(34,211,163,.28); }
+.pill.yellow { background: var(--yellow-dim); color: #fde68a; border-color: rgba(251,191,36,.28); }
+.pill.red    { background: var(--red-dim);    color: #fca5a5; border-color: rgba(248,113,113,.28); }
+.pill.orange { background: var(--orange-dim); color: #fed7aa; border-color: rgba(251,146,60,.28); }
+.pill.blue   { background: var(--blue-dim);   color: #93c5fd; border-color: rgba(79,156,249,.28); }
+.pill.gray   { background: var(--surface-hi); color: var(--muted); border-color: var(--border); }
+
+/* ─── PROGRESS BAR ─── */
+.prog-wrap { display: flex; align-items: center; gap: 7px; }
+.prog-track { flex: 1; height: 5px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.prog-fill { height: 100%; border-radius: 999px; transition: width .8s ease; }
+.prog-pct { font-size: 10px; color: var(--muted); min-width: 28px; font-variant-numeric: tabular-nums; }
+
+/* ─── BAR LIST ─── */
+.bar-list { display: flex; flex-direction: column; gap: 9px; padding: 12px 16px; }
+.bar-item-row { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 4px; }
+.bar-name { font-size: 12px; font-weight: 700; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 72%; }
+.bar-val { font-size: 12px; font-weight: 700; color: var(--muted); white-space: nowrap; }
+.bar-track { height: 5px; border-radius: 999px; background: rgba(255,255,255,0.07); overflow: hidden; }
+.bar-fill { height: 100%; border-radius: 999px; }
+
+/* ─── STAT LIST ─── */
+.stat-row {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 11px 16px; border-bottom: 1px solid rgba(255,255,255,0.04);
+}
+.stat-row:last-child { border-bottom: none; }
+.stat-left { display: flex; align-items: center; gap: 10px; }
+.stat-dot { width: 9px; height: 9px; border-radius: 50%; flex-shrink: 0; }
+.stat-label { font-size: 12px; font-weight: 600; }
+.stat-num { font-size: 20px; font-weight: 900; font-variant-numeric: tabular-nums; }
+
+/* ─── UF CHIPS ─── */
+.uf-wrap { display: flex; flex-wrap: wrap; gap: 7px; padding: 12px 16px; }
+.uf-chip {
+  display: flex; align-items: center; gap: 5px;
+  padding: 5px 11px; border-radius: 9px;
+  background: var(--surface-hi); border: 1px solid var(--border);
+  font-size: 11px; font-weight: 800;
+}
+.uf-chip span { font-size: 10px; font-weight: 600; color: var(--muted); }
+
+/* ─── MAT COUNT ─── */
+.mc { font-size: 11px; font-weight: 700; padding: 2px 7px; border-radius: 6px; }
+.mc.has { color: var(--blue); background: var(--blue-dim); }
+.mc.none { color: var(--soft); background: var(--surface-hi); }
+
+/* ─── DAYS REMAINING ─── */
+.days-num { font-size: 12px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.days-num.ok  { color: var(--green); }
+.days-num.warn { color: var(--yellow); }
+.days-num.over { color: var(--red); }
+
+/* ─── BOTTOM BAR ─── */
+.bottombar {
+  position: absolute; bottom: 0; left: 0; right: 0; z-index: 100;
+  height: 48px; padding: 0 22px;
+  display: flex; align-items: center; gap: 18px;
+  background: rgba(3,11,23,0.92);
+  border-top: 1px solid var(--border);
+  backdrop-filter: blur(16px);
+}
+.nav-dots { display: flex; align-items: center; gap: 7px; }
+.nav-dot {
+  height: 5px; border-radius: 999px; cursor: pointer;
+  background: rgba(255,255,255,0.18); border: none;
+  width: 22px; transition: all .3s ease;
+}
+.nav-dot.active { background: var(--blue); width: 28px; }
+.nav-dot:hover { background: rgba(79,156,249,.55); }
+.prog-global { flex: 1; max-width: 260px; }
+.last-upd { font-size: 11px; color: var(--soft); display: flex; align-items: center; gap: 5px; margin-left: auto; }
+.slide-ctr { font-size: 12px; font-weight: 700; color: var(--soft); font-variant-numeric: tabular-nums; }
 </style>
 </head>
 <body>
 <div class="tv">
+
+  <!-- TOP BAR -->
   <div class="topbar">
     <div class="brand">
-      <h1>TV · Projetos e próximos inícios <span style="font-size:0.45em; opacity:0.55; vertical-align:middle; margin-left:12px;">v1</span></h1>
-      <p>Painel em modo slide automático, feito para deixar rodando sozinho na TV.</p>
+      <div class="brand-mark">E</div>
+      <div>
+        <div class="brand-name">Escola de Gestão Aquila</div>
+        <div class="brand-sub">Dashboard de Projetos — TV</div>
+      </div>
     </div>
-    <div class="chips">
-      <div class="chip"><span class="dot blue"></span><span id="modeBadge">Carregando base</span></div>
-      <div class="chip"><span class="dot green"></span><span id="fileInfo">-</span></div>
-      <div class="chip"><span class="dot yellow"></span><span id="generatedAt">-</span></div>
-      <div class="chip"><span id="clockNow">-</span></div>
+    <div class="topbar-center">
+      <div class="slide-label" id="slideLabel">Visão Geral</div>
+    </div>
+    <div class="topbar-right">
+      <div class="live-badge" id="dataStatus">
+        <span class="blink"></span><span id="statusText">Conectando…</span>
+      </div>
+      <div>
+        <div class="clock" id="clock">--:--:--</div>
+        <div class="clock-date" id="clockDate">--</div>
+      </div>
     </div>
   </div>
 
+  <!-- SLIDES CONTAINER -->
   <div class="slides">
-    <section class="slide active" id="slide0">
-      <div class="slide-title">
-        <div>
-          <h2>O que está mais perto de começar</h2>
-          <p>Visão rápida para bater o olho e já entender próximos projetos, atrasos e início previsto.</p>
-        </div>
-      </div>
-      <div class="kpi-row" id="startKpis"></div>
-      <div class="hero-grid">
-        <article class="card hero">
-          <div class="card-head">
-            <div>
-              <h3>Projeto prioridade máxima</h3>
-              <span>o início mais próximo dentro das previsões</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="hero-main">
-              <div class="hero-priority" id="priorityHero"></div>
-              <div>
-                <div class="alert-list" id="miniAlerts"></div>
-              </div>
-            </div>
-          </div>
-        </article>
-        <article class="card">
-          <div class="card-head">
-            <div>
-              <h3>Radar de início</h3>
-              <span>top projetos previstos para começar</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="alert-list" id="startRadar"></div>
-          </div>
-        </article>
-      </div>
-    </section>
 
-    <section class="slide" id="slideTrein">
-      <div class="slide-title">
-        <div>
-          <h2>Próximos Treinamentos</h2>
-          <p>Sessões confirmadas, datas previstas e instrutor por projeto.</p>
+    <!-- SLIDE 0: VISÃO GERAL -->
+    <div class="slide active" id="slide-0">
+      <div class="s-header">
+        <div class="s-header-left">
+          <div class="s-icon" style="background:var(--blue-dim);">📊</div>
+          <div>
+            <div class="s-title">Visão Geral</div>
+            <div class="s-subtitle">Panorama completo da carteira de projetos</div>
+          </div>
+        </div>
+        <div class="s-badge" id="ov-badge">39 projetos</div>
+      </div>
+      <div class="kpi-row c4" id="ov-kpis"></div>
+      <div class="grid2" style="flex:1;min-height:0;">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-head-title">👤 Gestores de Projeto</span></div>
+          <div class="panel-body bar-list" id="ov-gestores" style="overflow:hidden;"></div>
+        </div>
+        <div class="col" style="min-height:0;">
+          <div class="panel" style="flex:1;">
+            <div class="panel-head"><span class="panel-head-title">🎯 Status de Materiais</span></div>
+            <div class="panel-body" id="ov-materiais" style="overflow:hidden;"></div>
+          </div>
+          <div class="panel" style="flex:1;">
+            <div class="panel-head"><span class="panel-head-title">📍 Estados (UF)</span></div>
+            <div class="panel-body uf-wrap" id="ov-ufs" style="overflow:hidden;"></div>
+          </div>
         </div>
       </div>
-      <div class="trein-grid">
-        <article class="card" style="display:flex;flex-direction:column;">
-          <div class="card-head">
-            <div>
-              <h3>Prioridade máxima</h3>
-              <span>treinamento com início mais próximo</span>
-            </div>
-          </div>
-          <div class="card-body" style="flex:1;">
-            <div class="hero-trein" id="treinHero"></div>
-          </div>
-        </article>
-        <article class="card">
-          <div class="card-head">
-            <div>
-              <h3>Fila de treinamentos</h3>
-              <span>previsão de início · sessões e datas</span>
-            </div>
-          </div>
-          <div class="card-body">
-            <div class="alert-list" id="treinList"></div>
-          </div>
-        </article>
-      </div>
-    </section>
+    </div>
 
-    <section class="slide" id="slide1">
-      <div class="slide-title">
-        <div>
-          <h2>Agenda operacional</h2>
-          <p>Projetos em andamento, próximos términos e próximos inícios em uma leitura simples.</p>
+    <!-- SLIDE 1: EM ANDAMENTO -->
+    <div class="slide" id="slide-1">
+      <div class="s-header">
+        <div class="s-header-left">
+          <div class="s-icon" style="background:var(--green-dim);">▶</div>
+          <div>
+            <div class="s-title">Projetos em Andamento</div>
+            <div class="s-subtitle">Execução ativa — ordenado por prazo de término</div>
+          </div>
+        </div>
+        <div class="s-badge" id="and-badge">—</div>
+      </div>
+      <div class="kpi-row c4" id="and-kpis"></div>
+      <div class="panel" style="flex:1;min-height:0;">
+        <div class="panel-head">
+          <span class="panel-head-title">📁 Projetos Ativos</span>
+          <span class="panel-count" id="and-count">—</span>
+        </div>
+        <div class="panel-body scroll-y">
+          <table class="dtable">
+            <thead><tr>
+              <th>Cliente / Nome Fantasia</th>
+              <th>Produto</th>
+              <th>Gestor</th>
+              <th>Início</th>
+              <th>Término Previsto</th>
+              <th>Progresso</th>
+              <th>Material</th>
+            </tr></thead>
+            <tbody id="and-tbody"></tbody>
+          </table>
         </div>
       </div>
-      <div class="split">
-        <article class="card">
-          <div class="card-head"><div><h3>Em andamento · prazos próximos</h3><span>prioridade por término</span></div></div>
-          <div class="card-body"><div class="stack" id="activeList"></div></div>
-        </article>
-        <article class="card">
-          <div class="card-head"><div><h3>Previsão · fila de início</h3><span>ordenado por data de início</span></div></div>
-          <div class="card-body"><div class="stack" id="forecastList"></div></div>
-        </article>
-      </div>
-    </section>
+    </div>
 
-    <section class="slide" id="slide2">
-      <div class="slide-title">
-        <div>
-          <h2>Envios e materiais</h2>
-          <p>Livros, kits e certificados para apoiar a operação e evitar correria.</p>
+    <!-- SLIDE 2: PREVISÃO -->
+    <div class="slide" id="slide-2">
+      <div class="s-header">
+        <div class="s-header-left">
+          <div class="s-icon" style="background:var(--yellow-dim);">🔮</div>
+          <div>
+            <div class="s-title">Pipeline — Previsão</div>
+            <div class="s-subtitle">Projetos a iniciar — aguardando confirmação ou sem data</div>
+          </div>
+        </div>
+        <div class="s-badge" id="prev-badge">—</div>
+      </div>
+      <div class="kpi-row c4" id="prev-kpis"></div>
+      <div class="panel" style="flex:1;min-height:0;">
+        <div class="panel-head">
+          <span class="panel-head-title">📅 Pipeline de Projetos</span>
+          <span class="panel-count" id="prev-count">—</span>
+        </div>
+        <div class="panel-body scroll-y">
+          <table class="dtable">
+            <thead><tr>
+              <th>Cliente / Nome Fantasia</th>
+              <th>Produto</th>
+              <th>Gestor</th>
+              <th>Início Previsto</th>
+              <th>Término Previsto</th>
+              <th>Valor Proposta</th>
+              <th>Situação</th>
+            </tr></thead>
+            <tbody id="prev-tbody"></tbody>
+          </table>
         </div>
       </div>
-      <div class="metrics-grid">
-        <article class="card">
-          <div class="card-head"><div><h3>Resumo de materiais</h3><span>soma do que está previsto na planilha</span></div></div>
-          <div class="card-body">
-            <div class="metrics-stack" id="materialCards"></div>
-          </div>
-        </article>
-        <article class="card">
-          <div class="card-head"><div><h3>Projetos com maior demanda</h3><span>itens previstos e valor total</span></div></div>
-          <div class="card-body">
-            <div class="table-wrap">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Projeto</th>
-                    <th>Janela</th>
-                    <th>Itens</th>
-                    <th>Total</th>
-                  </tr>
-                </thead>
-                <tbody id="materialsTable"></tbody>
-              </table>
-            </div>
-          </div>
-        </article>
-      </div>
-    </section>
+    </div>
 
-    <section class="slide" id="slide3">
-      <div class="slide-title">
-        <div>
-          <h2>Resumo executivo</h2>
-          <p>Status da carteira, maiores propostas e distribuição operacional.</p>
+    <!-- SLIDE 3: MATERIAIS -->
+    <div class="slide" id="slide-3">
+      <div class="s-header">
+        <div class="s-header-left">
+          <div class="s-icon" style="background:var(--purple-dim);">📦</div>
+          <div>
+            <div class="s-title">Controle de Materiais</div>
+            <div class="s-subtitle">Livros, kits e certificados demandados por projeto</div>
+          </div>
+        </div>
+        <div class="s-badge" id="mat-badge">—</div>
+      </div>
+      <div class="kpi-row c4" id="mat-kpis"></div>
+      <div class="panel" style="flex:1;min-height:0;">
+        <div class="panel-head">
+          <span class="panel-head-title">📋 Demanda por Projeto</span>
+          <span class="panel-count" id="mat-count">—</span>
+        </div>
+        <div class="panel-body scroll-y">
+          <table class="dtable">
+            <thead><tr>
+              <th>Cliente / Nome Fantasia</th>
+              <th>Livro / Produto</th>
+              <th class="c">Livros</th>
+              <th class="c">Kits</th>
+              <th class="c">Certificados</th>
+              <th class="r">Valor Materiais</th>
+              <th>Status</th>
+            </tr></thead>
+            <tbody id="mat-tbody"></tbody>
+          </table>
         </div>
       </div>
-      <div class="two-col">
-        <article class="card">
-          <div class="card-head"><div><h3>Status e comercial</h3><span>resumo rápido da carteira</span></div></div>
-          <div class="card-body">
-            <div class="kpi-row" id="execKpis" style="grid-template-columns:repeat(3, minmax(0,1fr)); margin-bottom:14px;"></div>
-            <div class="table-wrap" style="height:calc(100% - 158px);">
-              <table>
-                <thead>
-                  <tr>
-                    <th>Proposta</th>
-                    <th>Cliente</th>
-                    <th>Status</th>
-                    <th>Valor</th>
-                  </tr>
-                </thead>
-                <tbody id="valueTable"></tbody>
-              </table>
-            </div>
+    </div>
+
+    <!-- SLIDE 4: FINANCEIRO -->
+    <div class="slide" id="slide-4">
+      <div class="s-header">
+        <div class="s-header-left">
+          <div class="s-icon" style="background:var(--green-dim);">💰</div>
+          <div>
+            <div class="s-title">Visão Financeira</div>
+            <div class="s-subtitle">Valores da carteira, distribuição por gestor e estado</div>
           </div>
-        </article>
-        <article class="card">
-          <div class="card-head"><div><h3>Distribuição</h3><span>gestores, UFs e produtos</span></div></div>
-          <div class="card-body">
-            <div class="bar-list" id="gpBars" style="margin-bottom:16px;"></div>
-            <div class="bar-list" id="ufBars" style="margin-bottom:16px;"></div>
-            <div class="bar-list" id="productBars"></div>
-          </div>
-        </article>
+        </div>
+        <div class="s-badge" id="fin-badge">—</div>
       </div>
-    </section>
+      <div class="kpi-row c3" id="fin-kpis"></div>
+      <div class="grid-lh" style="flex:1;min-height:0;">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-head-title">🏆 Top Projetos por Valor</span></div>
+          <div class="panel-body scroll-y">
+            <table class="dtable">
+              <thead><tr>
+                <th>#</th><th>Cliente</th><th>Produto</th><th>Gestor</th><th>Status</th><th class="r">Valor</th>
+              </tr></thead>
+              <tbody id="fin-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="col" style="min-height:0;">
+          <div class="panel" style="flex:1;">
+            <div class="panel-head"><span class="panel-head-title">👤 Valor por Gestor</span></div>
+            <div class="bar-list" id="fin-gestores" style="overflow:hidden;"></div>
+          </div>
+          <div class="panel" style="flex:1;">
+            <div class="panel-head"><span class="panel-head-title">🗺 Valor por Estado (Top 5)</span></div>
+            <div class="bar-list" id="fin-ufs" style="overflow:hidden;"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /slides -->
+
+  <!-- BOTTOM BAR -->
+  <div class="bottombar">
+    <div class="nav-dots" id="navDots"></div>
+    <div class="prog-global">
+      <div class="prog-track"><div class="prog-fill" id="progressFill" style="width:0%; background:linear-gradient(90deg,var(--blue),var(--purple));"></div></div>
+    </div>
+    <div class="last-upd" id="lastUpdate">Aguardando…</div>
+    <div class="slide-ctr" id="slideCtr">1 / 5</div>
   </div>
 
-  <div class="bottom-ui">
-    <div class="progress"><div id="progressFill"></div></div>
-    <div class="dots" id="dots"></div>
-    <div class="hint">Troca automática · 30s por slide</div>
-    <span class="hint" id="lastUpdate" style="opacity:0.6; font-style:italic;">—</span>
-  </div>
-</div>
-
+</div><!-- /tv -->
 <script>
 const EMBEDDED_DATA = {
   "source_file": "Andamento - Projetos.xlsx",
@@ -2759,457 +2815,582 @@ const EMBEDDED_DATA = {
     }
   ]
 };
+
+// ─── SLIDE METADATA ───
+const SLIDE_NAMES = ['Visão Geral','Em Andamento','Previsão / Pipeline','Materiais','Financeiro'];
 const SLIDE_MS = 30000;
 let currentSlide = 0;
 let lastSwitch = Date.now();
-let lastGoodData = EMBEDDED_DATA;
 let lastFetchTime = null;
+let lastGoodData = null;
 
-function num(v) {
-  const n = Number(v);
-  return Number.isFinite(n) ? n : 0;
-}
+// ─── UTILITIES ───
+function num(v) { const n = Number(v); return Number.isFinite(n) ? n : 0; }
+
 function parseDate(v) {
-  if (!v) return null;
-  const d = new Date(v + 'T00:00:00');
+  if (v === null || v === undefined || v === '') return null;
+  if (typeof v === 'number' && v > 1000) {
+    // Excel serial number → JS Date (Excel epoch: Dec 30, 1899)
+    return new Date(Date.UTC(1899, 11, 30) + v * 86400000);
+  }
+  const s = String(v).split(' ')[0].split('T')[0];
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(s)) return null;
+  const d = new Date(s + 'T00:00:00');
   return Number.isNaN(d.getTime()) ? null : d;
 }
-function fmtInt(v) {
-  return new Intl.NumberFormat('pt-BR', { maximumFractionDigits:0 }).format(num(v));
-}
+
 function fmtMoney(v) {
   return new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:0 }).format(num(v));
 }
-function fmtMoney1(v) {
-  return new Intl.NumberFormat('pt-BR', { style:'currency', currency:'BRL', maximumFractionDigits:1 }).format(num(v));
+function fmtMoneyK(v) {
+  const n = num(v);
+  if (n >= 1e6) return 'R$ ' + (n/1e6).toLocaleString('pt-BR',{maximumFractionDigits:1}) + 'M';
+  if (n >= 1e3) return 'R$ ' + (n/1e3).toLocaleString('pt-BR',{maximumFractionDigits:0}) + 'K';
+  return fmtMoney(n);
 }
-function longDate(d) {
-  return d ? d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit', year:'numeric' }) : '-';
-}
-function shortDay(d) {
-  return d ? d.toLocaleDateString('pt-BR', { day:'2-digit', month:'2-digit' }) : '-';
+function fmtInt(v) { return Math.round(num(v)).toLocaleString('pt-BR'); }
+function longDate(d) { return d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit',year:'numeric'}) : '—'; }
+function shortDate(d) { return d ? d.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'}) : '—'; }
+function esc(s) {
+  return String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 function spToday() {
-  return new Date(new Intl.DateTimeFormat('en-CA', {
+  return new Date(new Intl.DateTimeFormat('en-CA',{
     timeZone:'America/Sao_Paulo', year:'numeric', month:'2-digit', day:'2-digit'
   }).format(new Date()) + 'T00:00:00');
 }
 function dayDiff(a, b) {
-  const x = new Date(a); const y = new Date(b);
+  const x = new Date(a), y = new Date(b);
   x.setHours(0,0,0,0); y.setHours(0,0,0,0);
   return Math.round((y - x) / 86400000);
 }
-function esc(s) {
-  return String(s ?? '').replaceAll('&','&amp;').replaceAll('<','&lt;').replaceAll('>','&gt;').replaceAll('"','&quot;');
+function trunc(s, n) {
+  const str = String(s || '');
+  return str.length > n ? str.slice(0, n - 1) + '…' : str;
 }
-function windowInfo(row, today) {
-  const inicio = parseDate(row['Início']);
-  const termino = parseDate(row['Término']);
-  const status = (row.Status || '').toLowerCase();
-  const active = inicio && termino && inicio <= today && termino >= today;
-  if (status === 'previsão' && inicio) {
-    const diff = dayDiff(today, inicio);
-    if (diff > 0) return { type:'start_future', label:'começa em', days:diff, date:inicio };
-    if (diff === 0) return { type:'start_today', label:'começa hoje', days:0, date:inicio };
-    return { type:'start_overdue', label:'data vencida há', days:Math.abs(diff), date:inicio };
-  }
-  if (active && termino) {
-    return { type:'end_active', label:'termina em', days:dayDiff(today, termino), date:termino };
-  }
-  if (inicio && inicio >= today) {
-    return { type:'start_future', label:'começa em', days:dayDiff(today, inicio), date:inicio };
-  }
-  if (termino) {
-    return { type:'end_other', label:'termina em', days:Math.abs(dayDiff(today, termino)), date:termino };
-  }
-  return { type:'none', label:'sem data', days:9999, date:null };
+
+// ─── RECORD NORMALIZER ───
+// Handles both embedded data (Title Case) and live JSON (snake_case)
+function norm(r) {
+  const g = (...keys) => {
+    for (const k of keys) {
+      if (r[k] !== undefined && r[k] !== null && r[k] !== '') return r[k];
+    }
+    return null;
+  };
+  return {
+    proposta:    g('proposta','Proposta'),
+    cliente:     g('cliente','Cliente'),
+    fantasia:    g('nome_fantasia','Nome fantasia'),
+    uf:          g('uf','UF'),
+    produto:     g('produto','Produto'),
+    status:      g('status','Status'),
+    inicio:      g('início_efetivo','Início efetivo','início','Início'),
+    termino:     g('data_término_previsto','Data término previsto','término','Término'),
+    valor:       g('valor_da_proposta','Valor da proposta'),
+    gestor:      g('gestor_de_projeto','Gestor de Projeto'),
+    gerente:     g('gerente','Gerente'),
+    livro:       g('livro','Livro'),
+    qtd_livro:   g('quantidade_livro','Quantidade Livro'),
+    val_livro:   g('valor_total_livro','Valor Total Livro'),
+    qtd_kits:    g('quantidade_kits','Quantidade Kits'),
+    val_kits:    g('valor_total_kits','Valor Total Kits'),
+    qtd_cert:    g('quantidade_certificado','Quantidade Certificado'),
+    val_cert:    g('valor_total_certificados','Valor Total Certificados'),
+    val_mat:     g('valor_total','Valor Total'),
+    respostas:   g('respostas','RESPOSTAS'),
+    observacao:  g('observação','Observação'),
+    regiao:      g('região','Região'),
+  };
 }
-function prioritySort(records, today) {
-  function score(r) {
-    const w = windowInfo(r, today);
-    let bucket = 5;
-    if (w.type === 'start_future' && w.days <= 30) bucket = 0;
-    else if (w.type === 'start_today') bucket = 0;
-    else if (w.type === 'start_overdue') bucket = 1;
-    else if (w.type === 'start_future') bucket = 2;
-    else if (w.type === 'end_active') bucket = 3;
-    return [bucket, w.days, parseDate(r['Início']) || new Date('2100-01-01')];
-  }
-  return [...records].sort((a,b) => {
-    const sa = score(a), sb = score(b);
-    if (sa[0] !== sb[0]) return sa[0] - sb[0];
-    if (sa[1] !== sb[1]) return sa[1] - sb[1];
-    return sa[2] - sb[2];
-  });
+
+// ─── STATUS HELPERS ───
+function respPill(resp) {
+  const r = (resp || '').trim().toUpperCase();
+  if (r === 'CONCLUIDO')                    return '<span class="pill green">✓ Concluído</span>';
+  if (r === 'CONFIRMAR DATAS E MATERIAIS')  return '<span class="pill yellow">⚠ Confirmar Datas</span>';
+  if (r === 'SEM PREVISÃO')                 return '<span class="pill red">✗ Sem Previsão</span>';
+  if (r === 'ENTRAR EM CONTATO')            return '<span class="pill orange">📞 Contato</span>';
+  return '<span class="pill gray">—</span>';
 }
-function tagForWindow(w) {
-  if (w.type === 'start_future' && w.days <= 7) return { cls:'warn', text:`${w.days} dia(s)` };
-  if (w.type === 'start_future') return { cls:'ok', text:`${w.days} dia(s)` };
-  if (w.type === 'start_today') return { cls:'warn', text:'hoje' };
-  if (w.type === 'start_overdue') return { cls:'danger', text:`${w.days} dia(s) atrasado` };
-  if (w.type === 'end_active') return { cls:'ok', text:`${w.days} dia(s)` };
-  return { cls:'ok', text:'-' };
+function statusPill(status) {
+  const s = (status || '').toLowerCase();
+  if (s === 'em andamento') return '<span class="pill green">Em Andamento</span>';
+  if (s === 'previsão')     return '<span class="pill yellow">Previsão</span>';
+  return '<span class="pill gray">—</span>';
 }
-function rankBy(records, keyFn, valueFn, limit) {
-  const map = new Map();
+function shortGestor(g) {
+  if (!g) return '—';
+  const p = String(g).trim().split(' ');
+  return p.length >= 2 ? p[0] + ' ' + p[1] : p[0];
+}
+function progressBar(n, color) {
+  return `<div class="panel-body" style="padding:0;">
+    <div class="prog-wrap">
+      <div class="prog-track"><div class="prog-fill" style="width:${n}%;background:${color};"></div></div>
+      <span class="prog-pct">${n}%</span>
+    </div>
+  </div>`;
+}
+
+// ─── RANK BY ───
+function rankBy(records, keyFn, valFn, limit) {
+  const m = new Map();
   records.forEach(r => {
-    const key = keyFn(r);
-    if (!key || key === '-') return;
-    map.set(key, (map.get(key) || 0) + valueFn(r));
+    const k = keyFn(r);
+    if (!k) return;
+    m.set(k, (m.get(k) || 0) + valFn(r));
   });
-  return [...map.entries()].sort((a,b) => b[1] - a[1]).slice(0, limit).map(([label, value]) => ({ label, value }));
+  return [...m.entries()].sort((a,b) => b[1]-a[1]).slice(0, limit).map(([label,value]) => ({label,value}));
 }
-function normalizeProduct(label) {
-  if (!label) return 'Sem produto';
-  return String(label)
-    .replace(/^Treinamento\s*-\s*/i, '')
-    .replace(/^Programa de\s*/i, 'Prog. ')
-    .replace(/^Programa\s*/i, 'Prog. ')
-    .trim();
-}
-function renderStartSlide(records, today) {
-  const previsao = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today);
-  const overdue = previsao.filter(r => windowInfo(r, today).type === 'start_overdue').length;
-  const next30 = previsao.filter(r => {
-    const w = windowInfo(r, today);
-    return (w.type === 'start_future' || w.type === 'start_today') && w.days <= 30;
-  }).length;
-  const noMaterial = previsao.filter(r => !(num(r['Quantidade Livro']) || num(r['Quantidade Kits']) || num(r['Quantidade Certificado']))).length;
-  document.getElementById('startKpis').innerHTML = [
-    { label:'Projetos em previsão', value: fmtInt(previsao.length), sub:'Carteira prevista para começar.' },
-    { label:'Começam em até 30 dias', value: fmtInt(next30), sub:'Esses precisam estar muito visíveis.' },
-    { label:'Previsão com data vencida', value: fmtInt(overdue), sub:'Acende alerta operacional.' },
-    { label:'Previsão sem material', value: fmtInt(noMaterial), sub:'Sem livro, kit ou certificado lançado.' }
-  ].map(k => `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');
 
-  const priority = previsao.find(r => {
-    const w = windowInfo(r, today);
-    return w.type === 'start_future' || w.type === 'start_today';
-  }) || previsao[0];
+// ─── SLIDE 0: VISÃO GERAL ───
+function renderOverview(records, today) {
+  const all   = records;
+  const and   = records.filter(r => (r.status||'').toLowerCase() === 'em andamento');
+  const prev  = records.filter(r => (r.status||'').toLowerCase() === 'previsão');
+  const tVal  = records.reduce((s,r)=>s+num(r.valor),0);
+  const aVal  = and.reduce((s,r)=>s+num(r.valor),0);
 
-  const pw = priority ? windowInfo(priority, today) : null;
-  document.getElementById('priorityHero').innerHTML = priority ? `
-    <div class="eyebrow">${pw.type === 'start_overdue' ? 'alerta de previsão' : 'próximo início confirmado pela planilha'}</div>
-    <div class="days">${pw.days}<small>${pw.type === 'start_overdue' ? 'dias de atraso' : (pw.days === 0 ? 'começa hoje' : 'dias para iniciar')}</small></div>
-    <div class="client">${esc(priority.Cliente || '-')}</div>
-    <div class="product">${esc(priority.Produto || '-')}</div>
-    <div class="meta">
-      <span class="tag ${pw.type === 'start_overdue' ? 'danger' : pw.days <= 7 ? 'warn' : 'ok'}">Início · ${longDate(pw.date)}</span>
-      <span class="tag">${esc(priority.UF || '-')}</span>
-      <span class="tag">${esc(priority.Proposta || '-')}</span>
-      <span class="tag">Materiais · Livros ${fmtInt(priority['Quantidade Livro'])} · Kits ${fmtInt(priority['Quantidade Kits'])} · Cert. ${fmtInt(priority['Quantidade Certificado'])}</span>
-    </div>` : `<div class="client">Sem projeto em previsão</div>`;
-
-  const mini = previsao.slice(0,4).map(r => {
-    const w = windowInfo(r, today);
-    const badgeClass = w.type === 'start_overdue' ? 'overdue' : (w.days <= 7 ? 'soon' : 'future');
-    const badgeText = w.type === 'start_overdue' ? `${w.days}d atrasado` : (w.days === 0 ? 'hoje' : `${w.days}d`);
-    return `
-      <div class="mini-alert">
-        <div class="top">
-          <div>
-            <strong>${esc(r.Cliente || '-')}</strong>
-            <div class="small">${esc(r.Produto || '-')}</div>
-          </div>
-          <div class="badge ${badgeClass}">${badgeText}</div>
-        </div>
-        <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
-        <div class="small">Início ${longDate(w.date)} · Livros ${fmtInt(r['Quantidade Livro'])} · Kits ${fmtInt(r['Quantidade Kits'])}</div>
-      </div>`;
-  }).join('');
-  document.getElementById('miniAlerts').innerHTML = mini;
-
-  const radar = previsao.slice(0,8).map(r => {
-    const w = windowInfo(r, today);
-    const tag = tagForWindow(w);
-    return `
-      <div class="mini-alert">
-        <div class="top">
-          <div>
-            <strong>${esc(r.Cliente || '-')}</strong>
-            <div class="small">${esc(r.Produto || '-')}</div>
-          </div>
-          <div class="badge ${w.type === 'start_overdue' ? 'overdue' : (w.days <= 7 ? 'soon' : 'future')}">${tag.text}</div>
-        </div>
-        <div class="small">Início: <strong>${longDate(w.date)}</strong> · ${esc(r['Gestor de Projeto'] || 'Sem GP')}</div>
-        <div class="small">Material: livros ${fmtInt(r['Quantidade Livro'])} · kits ${fmtInt(r['Quantidade Kits'])} · cert. ${fmtInt(r['Quantidade Certificado'])}</div>
-      </div>`;
-  }).join('');
-  document.getElementById('startRadar').innerHTML = radar || '<div class="mini-alert"><strong>Sem registros em previsão.</strong></div>';
-}
-function renderAgendaSlide(records, today) {
-  const active = records
-    .filter(r => {
-      const i = parseDate(r['Início']); const t = parseDate(r['Término']);
-      return (r.Status || '').toLowerCase() === 'em andamento' && i && t && i <= today && t >= today;
-    })
-    .sort((a,b) => (parseDate(a['Término']) || new Date('2100-01-01')) - (parseDate(b['Término']) || new Date('2100-01-01')))
-    .slice(0, 6);
-
-  const forecast = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today).slice(0, 6);
-
-  document.getElementById('activeList').innerHTML = active.map(r => {
-    const end = parseDate(r['Término']);
-    const days = dayDiff(today, end);
-    return `
-      <div class="list-item">
-        <div class="date-box"><strong>${shortDay(end)}</strong><span>Término</span></div>
-        <div class="main">
-          <strong>${esc(r.Cliente || '-')}</strong>
-          <div class="small">${esc(r.Produto || '-')}</div>
-          <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
-        </div>
-        <div class="side"><strong>${days}</strong>dias</div>
-      </div>`;
-  }).join('') || '<div class="mini-alert"><strong>Nenhum projeto ativo na base.</strong></div>';
-
-  document.getElementById('forecastList').innerHTML = forecast.map(r => {
-    const w = windowInfo(r, today);
-    const delta = w.type === 'start_overdue' ? `${w.days}d atraso` : (w.days === 0 ? 'hoje' : `${w.days}d`);
-    return `
-      <div class="list-item">
-        <div class="date-box"><strong>${shortDay(w.date)}</strong><span>Início</span></div>
-        <div class="main">
-          <strong>${esc(r.Cliente || '-')}</strong>
-          <div class="small">${esc(r.Produto || '-')}</div>
-          <div class="small">GP: ${esc(r['Gestor de Projeto'] || '-')} · Materiais: L ${fmtInt(r['Quantidade Livro'])} / K ${fmtInt(r['Quantidade Kits'])}</div>
-        </div>
-        <div class="side"><strong>${delta}</strong>${w.type === 'start_overdue' ? 'vencido' : 'até iniciar'}</div>
-      </div>`;
-  }).join('') || '<div class="mini-alert"><strong>Sem previsão de início cadastrada.</strong></div>';
-}
-function renderMaterialsSlide(records, today) {
-  const booksQty = records.reduce((s,r) => s + num(r['Quantidade Livro']), 0);
-  const kitsQty = records.reduce((s,r) => s + num(r['Quantidade Kits']), 0);
-  const certQty = records.reduce((s,r) => s + num(r['Quantidade Certificado']), 0);
-  const booksVal = records.reduce((s,r) => s + num(r['Valor Total Livro']), 0);
-  const kitsVal = records.reduce((s,r) => s + num(r['Valor Total Kits']), 0);
-  const certVal = records.reduce((s,r) => s + num(r['Valor Total Certificados']), 0);
-  const totalItems = Math.max(booksQty + kitsQty + certQty, 1);
-
-  document.getElementById('materialCards').innerHTML = `
-    <div class="metric-box">
-      <div class="muted">Itens totais planejados</div>
-      <div class="big">${fmtInt(totalItems)}</div>
-      <div class="muted" style="margin-top:8px;">Livros + kits + certificados.</div>
+  document.getElementById('ov-badge').textContent = `${all.length} projetos`;
+  document.getElementById('ov-kpis').innerHTML = `
+    <div class="kpi-card c-blue">
+      <div class="kpi-lbl">Total de Projetos</div>
+      <div class="kpi-val c-blue">${all.length}</div>
+      <div class="kpi-sub">Carteira consolidada</div>
     </div>
-    <div class="metric-box">
-      <div class="muted">Livros</div>
-      <div class="big">${fmtInt(booksQty)}</div>
-      <div class="muted" style="margin-top:8px;">${fmtMoney1(booksVal)}</div>
-      <div class="meter"><div style="width:${(booksQty/totalItems)*100}%"></div></div>
+    <div class="kpi-card c-green">
+      <div class="kpi-lbl">Em Andamento</div>
+      <div class="kpi-val c-green">${and.length}</div>
+      <div class="kpi-sub">Execução ativa</div>
     </div>
-    <div class="metric-box">
-      <div class="muted">Kits</div>
-      <div class="big">${fmtInt(kitsQty)}</div>
-      <div class="muted" style="margin-top:8px;">${fmtMoney1(kitsVal)}</div>
-      <div class="meter"><div style="width:${(kitsQty/totalItems)*100}%"></div></div>
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Previsão / Pipeline</div>
+      <div class="kpi-val c-yellow">${prev.length}</div>
+      <div class="kpi-sub">Aguardando início</div>
     </div>
-    <div class="metric-box">
-      <div class="muted">Certificados</div>
-      <div class="big">${fmtInt(certQty)}</div>
-      <div class="muted" style="margin-top:8px;">${fmtMoney1(certVal)}</div>
-      <div class="meter"><div style="width:${(certQty/totalItems)*100}%"></div></div>
+    <div class="kpi-card c-purple">
+      <div class="kpi-lbl">Valor Total Carteira</div>
+      <div class="kpi-val c-purple sm">${fmtMoneyK(tVal)}</div>
+      <div class="kpi-sub">${fmtMoneyK(aVal)} em execução</div>
     </div>`;
 
-  const materialRows = prioritySort(records.filter(r => num(r['Quantidade Livro']) || num(r['Quantidade Kits']) || num(r['Quantidade Certificado'])), today)
-    .sort((a,b) => num(b['Valor Total']) - num(a['Valor Total']))
-    .slice(0,8);
+  // Gestores
+  const gestores = {};
+  records.forEach(r => {
+    const g = String(r.gestor||'').trim();
+    if (g) gestores[g] = (gestores[g]||0)+1;
+  });
+  const gList = Object.entries(gestores).sort((a,b)=>b[1]-a[1]);
+  const gMax  = gList[0]?.[1] || 1;
+  document.getElementById('ov-gestores').innerHTML = gList.map(([name,cnt]) => {
+    const fn = shortGestor(name);
+    const pct = Math.round(cnt/gMax*100);
+    return `<div style="margin-bottom:4px;">
+      <div class="bar-item-row">
+        <span class="bar-name" title="${esc(name)}">${esc(fn)}</span>
+        <span class="bar-val">${cnt} proj.</span>
+      </div>
+      <div class="bar-track"><div class="bar-fill" style="width:${pct}%;background:var(--blue);"></div></div>
+    </div>`;
+  }).join('');
 
-  document.getElementById('materialsTable').innerHTML = materialRows.map(r => {
-    const w = windowInfo(r, today);
-    return `
-      <tr>
-        <td>
-          <strong class="mono">${esc(r.Proposta || '-')}</strong>
-          <div class="muted">${esc(r.Cliente || '-')}</div>
-        </td>
-        <td>
-          <strong>${w.type.startsWith('start') ? 'Início' : 'Término'}:</strong> ${longDate(w.date)}
-          <div class="muted">${esc(r.Produto || '-')}</div>
-        </td>
-        <td>
-          L ${fmtInt(r['Quantidade Livro'])} · K ${fmtInt(r['Quantidade Kits'])} · C ${fmtInt(r['Quantidade Certificado'])}
-        </td>
-        <td><strong>${fmtMoney1(r['Valor Total'])}</strong></td>
-      </tr>`;
+  // Material status
+  const RESP_MAP = [
+    ['CONCLUIDO',                   'Concluído',                'var(--green)',  'green'],
+    ['CONFIRMAR DATAS E MATERIAIS', 'Confirmar Datas/Materiais','var(--yellow)', 'yellow'],
+    ['SEM PREVISÃO',                'Sem Previsão',             'var(--red)',    'red'],
+    ['ENTRAR EM CONTATO',           'Entrar em Contato',        'var(--orange)', 'orange'],
+  ];
+  const rCounts = {};
+  records.forEach(r => {
+    const k = String(r.respostas||'').trim().toUpperCase();
+    if (k) rCounts[k] = (rCounts[k]||0)+1;
+  });
+  document.getElementById('ov-materiais').innerHTML = RESP_MAP
+    .filter(([k]) => rCounts[k])
+    .map(([k, lbl, color]) => `
+      <div class="stat-row">
+        <div class="stat-left">
+          <div class="stat-dot" style="background:${color};"></div>
+          <div class="stat-label">${lbl}</div>
+        </div>
+        <div class="stat-num" style="color:${color};">${rCounts[k]}</div>
+      </div>`).join('');
+
+  // UFs
+  const ufs = {};
+  records.forEach(r => { const u = r.uf||''; if(u) ufs[u]=(ufs[u]||0)+1; });
+  const ufList = Object.entries(ufs).sort((a,b)=>b[1]-a[1]);
+  document.getElementById('ov-ufs').innerHTML = ufList.map(([uf,cnt]) =>
+    `<div class="uf-chip"><strong>${esc(uf)}</strong><span>${cnt}</span></div>`).join('');
+}
+
+// ─── SLIDE 1: EM ANDAMENTO ───
+function renderAndamento(records, today) {
+  const list = records
+    .filter(r => (r.status||'').toLowerCase() === 'em andamento')
+    .sort((a,b) => {
+      const ea = parseDate(a.termino) || new Date('2100-01-01');
+      const eb = parseDate(b.termino) || new Date('2100-01-01');
+      return ea - eb;
+    });
+
+  const enc30 = list.filter(r => {
+    const end = parseDate(r.termino);
+    if (!end) return false;
+    const d = dayDiff(today, end);
+    return d >= 0 && d <= 30;
+  }).length;
+  const venc = list.filter(r => { const e = parseDate(r.termino); return e && e < today; }).length;
+  const aVal = list.reduce((s,r)=>s+num(r.valor),0);
+
+  document.getElementById('and-badge').textContent = `${list.length} projetos`;
+  document.getElementById('and-count').textContent = `${list.length} total`;
+  document.getElementById('and-kpis').innerHTML = `
+    <div class="kpi-card c-green">
+      <div class="kpi-lbl">Em Execução</div>
+      <div class="kpi-val c-green">${list.length}</div>
+      <div class="kpi-sub">Projetos ativos</div>
+    </div>
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Encerrando em ≤ 30 dias</div>
+      <div class="kpi-val c-yellow">${enc30}</div>
+      <div class="kpi-sub">Atenção ao prazo</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-lbl">Prazo Vencido</div>
+      <div class="kpi-val c-red">${venc}</div>
+      <div class="kpi-sub">Verificar situação</div>
+    </div>
+    <div class="kpi-card c-blue">
+      <div class="kpi-lbl">Valor em Execução</div>
+      <div class="kpi-val c-blue sm">${fmtMoneyK(aVal)}</div>
+      <div class="kpi-sub">Soma das propostas</div>
+    </div>`;
+
+  document.getElementById('and-tbody').innerHTML = list.map(r => {
+    const start = parseDate(r.inicio);
+    const end   = parseDate(r.termino);
+    const client = r.fantasia || r.cliente || '—';
+
+    let pct = 0, pColor = 'var(--green)';
+    if (start && end) {
+      const total = dayDiff(start, end);
+      pct = total > 0 ? Math.min(100, Math.max(0, Math.round(dayDiff(start, today)/total*100))) : 100;
+      pColor = pct >= 100 ? 'var(--red)' : pct >= 75 ? 'var(--yellow)' : 'var(--green)';
+    }
+
+    let daysLeft = end ? dayDiff(today, end) : null;
+    let dClass = daysLeft === null ? '' : daysLeft < 0 ? 'over' : daysLeft <= 30 ? 'warn' : 'ok';
+    const termStr = end
+      ? `${longDate(end)}<br><small class="days-num ${dClass}">${daysLeft >= 0 ? '+' : ''}${daysLeft}d</small>`
+      : '—';
+
+    return `<tr>
+      <td><strong>${esc(trunc(client,32))}</strong><br><small style="color:var(--muted)">${esc(trunc(r.produto,36))}</small></td>
+      <td style="color:var(--muted);font-size:11px;">${esc(trunc(r.produto,38))}</td>
+      <td style="color:var(--muted);">${esc(shortGestor(r.gestor))}</td>
+      <td style="color:var(--muted);">${longDate(start)}</td>
+      <td>${termStr}</td>
+      <td style="min-width:110px;">
+        <div class="prog-wrap">
+          <div class="prog-track"><div class="prog-fill" style="width:${pct}%;background:${pColor};"></div></div>
+          <span class="prog-pct">${pct}%</span>
+        </div>
+      </td>
+      <td>${respPill(r.respostas)}</td>
+    </tr>`;
   }).join('');
 }
-function renderExecSlide(records, today) {
-  const total = records.length;
-  const andamento = records.filter(r => (r.Status || '').toLowerCase() === 'em andamento').length;
-  const previsao = records.filter(r => (r.Status || '').toLowerCase() === 'previsão').length;
-  const valor = records.reduce((s,r) => s + num(r['Valor da proposta']), 0);
-  document.getElementById('execKpis').innerHTML = [
-    { label:'Em andamento', value: fmtInt(andamento), sub:`${Math.round(andamento/Math.max(total,1)*100)}% da base` },
-    { label:'Previsão', value: fmtInt(previsao), sub:`${Math.round(previsao/Math.max(total,1)*100)}% da base` },
-    { label:'Valor propostas', value: fmtMoney(valor), sub:'Soma da coluna comercial' }
-  ].map(k => `<div class="kpi"><div class="label">${k.label}</div><div class="value">${k.value}</div><div class="sub">${k.sub}</div></div>`).join('');
 
-  document.getElementById('valueTable').innerHTML = [...records]
-    .sort((a,b) => num(b['Valor da proposta']) - num(a['Valor da proposta']))
-    .slice(0,8)
-    .map(r => `
-      <tr>
-        <td><strong class="mono">${esc(r.Proposta || '-')}</strong><div class="muted">${esc(r.UF || '-')}</div></td>
-        <td><strong>${esc(r.Cliente || '-')}</strong><div class="muted">${esc(r.Produto || '-')}</div></td>
-        <td>${esc(r.Status || '-')}</td>
-        <td><strong>${fmtMoney(r['Valor da proposta'])}</strong></td>
-      </tr>
-    `).join('');
+// ─── SLIDE 2: PREVISÃO ───
+function renderPrevisao(records, today) {
+  const URGENCY = {
+    'ENTRAR EM CONTATO': 0,
+    'SEM PREVISÃO': 1,
+    'CONFIRMAR DATAS E MATERIAIS': 2,
+    'CONCLUIDO': 3,
+    '': 4
+  };
+  const list = records
+    .filter(r => (r.status||'').toLowerCase() === 'previsão')
+    .sort((a,b) => {
+      const ua = URGENCY[String(a.respostas||'').toUpperCase()] ?? 4;
+      const ub = URGENCY[String(b.respostas||'').toUpperCase()] ?? 4;
+      if (ua !== ub) return ua - ub;
+      const sa = parseDate(a.inicio) || new Date('2100-01-01');
+      const sb = parseDate(b.inicio) || new Date('2100-01-01');
+      return sa - sb;
+    });
 
-  const gps = rankBy(records, r => r['Gestor de Projeto'], _ => 1, 4);
-  const ufs = rankBy(records, r => r.UF, r => num(r['Valor Total']), 4);
-  const prods = rankBy(records, r => normalizeProduct(r.Produto), _ => 1, 4);
+  const confirmar  = list.filter(r => String(r.respostas||'').toUpperCase() === 'CONFIRMAR DATAS E MATERIAIS').length;
+  const semPrev    = list.filter(r => String(r.respostas||'').toUpperCase() === 'SEM PREVISÃO').length;
+  const contato    = list.filter(r => String(r.respostas||'').toUpperCase() === 'ENTRAR EM CONTATO').length;
+  const pVal       = list.reduce((s,r)=>s+num(r.valor),0);
 
-  function barHtml(items, suffix, title) {
-    const max = Math.max(...items.map(i => i.value), 1);
-    return `<div class="muted" style="margin:4px 0 10px;">${title}</div>` + items.map(i => `
-      <div class="bar-item">
-        <div>
-          <div class="bar-top"><span>${esc(i.label)}</span><span class="muted">${suffix(i.value)}</span></div>
-          <div class="bar-track"><div class="bar-fill" style="width:${(i.value/max)*100}%"></div></div>
-        </div>
-        <div class="bar-value">${suffix(i.value)}</div>
+  document.getElementById('prev-badge').textContent = `${list.length} projetos`;
+  document.getElementById('prev-count').textContent = `${list.length} total`;
+  document.getElementById('prev-kpis').innerHTML = `
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Aguardando Início</div>
+      <div class="kpi-val c-yellow">${list.length}</div>
+      <div class="kpi-sub">Pipeline total</div>
+    </div>
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Confirmar Datas / Mat.</div>
+      <div class="kpi-val c-yellow">${confirmar}</div>
+      <div class="kpi-sub">Aguardando confirmação</div>
+    </div>
+    <div class="kpi-card c-red">
+      <div class="kpi-lbl">Sem Previsão / Contato</div>
+      <div class="kpi-val c-red">${semPrev + contato}</div>
+      <div class="kpi-sub">Requer ação urgente</div>
+    </div>
+    <div class="kpi-card c-blue">
+      <div class="kpi-lbl">Valor Previsto</div>
+      <div class="kpi-val c-blue sm">${fmtMoneyK(pVal)}</div>
+      <div class="kpi-sub">Potencial de receita</div>
+    </div>`;
+
+  document.getElementById('prev-tbody').innerHTML = list.map(r => {
+    const start = parseDate(r.inicio);
+    const end   = parseDate(r.termino);
+    const client = r.fantasia || r.cliente || '—';
+    const val    = num(r.valor);
+    return `<tr>
+      <td><strong>${esc(trunc(client,32))}</strong></td>
+      <td style="color:var(--muted);font-size:11px;">${esc(trunc(r.produto,38))}</td>
+      <td style="color:var(--muted);">${esc(shortGestor(r.gestor))}</td>
+      <td>${start ? longDate(start) : '<span style="color:var(--soft)">—</span>'}</td>
+      <td>${end   ? longDate(end)   : '<span style="color:var(--soft)">—</span>'}</td>
+      <td class="r" style="font-weight:700;">${val ? fmtMoney(val) : '—'}</td>
+      <td>${respPill(r.respostas)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── SLIDE 3: MATERIAIS ───
+function renderMateriais(records, today) {
+  const com = records.filter(r => num(r.qtd_livro) || num(r.qtd_kits) || num(r.qtd_cert));
+  const tLiv = records.reduce((s,r)=>s+num(r.qtd_livro),0);
+  const tKit = records.reduce((s,r)=>s+num(r.qtd_kits),0);
+  const tCer = records.reduce((s,r)=>s+num(r.qtd_cert),0);
+  const tMat = records.reduce((s,r)=>s+num(r.val_mat),0);
+
+  document.getElementById('mat-badge').textContent = `${com.length} projetos c/ material`;
+  document.getElementById('mat-count').textContent = `${com.length} projetos`;
+  document.getElementById('mat-kpis').innerHTML = `
+    <div class="kpi-card c-blue">
+      <div class="kpi-lbl">📚 Livros</div>
+      <div class="kpi-val c-blue">${fmtInt(tLiv)}</div>
+      <div class="kpi-sub">unidades demandadas</div>
+    </div>
+    <div class="kpi-card c-purple">
+      <div class="kpi-lbl">🧰 Kits</div>
+      <div class="kpi-val c-purple">${fmtInt(tKit)}</div>
+      <div class="kpi-sub">unidades demandadas</div>
+    </div>
+    <div class="kpi-card c-green">
+      <div class="kpi-lbl">🎓 Certificados</div>
+      <div class="kpi-val c-green">${fmtInt(tCer)}</div>
+      <div class="kpi-sub">unidades demandadas</div>
+    </div>
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Valor Total Materiais</div>
+      <div class="kpi-val c-yellow sm">${fmtMoneyK(tMat)}</div>
+      <div class="kpi-sub">${com.length} projetos com material</div>
+    </div>`;
+
+  const sorted = [...com].sort((a,b) => num(b.val_mat) - num(a.val_mat));
+  document.getElementById('mat-tbody').innerHTML = sorted.map(r => {
+    const client = r.fantasia || r.cliente || '—';
+    const livro  = r.livro    || r.produto  || '—';
+    const qL = num(r.qtd_livro), qK = num(r.qtd_kits), qC = num(r.qtd_cert), vT = num(r.val_mat);
+    const mc = (n) => n ? `<span class="mc has">${fmtInt(n)}</span>` : `<span class="mc none">—</span>`;
+    return `<tr>
+      <td><strong>${esc(trunc(client,30))}</strong></td>
+      <td style="color:var(--muted);font-size:11px;">${esc(trunc(livro,32))}</td>
+      <td class="c">${mc(qL)}</td>
+      <td class="c">${mc(qK)}</td>
+      <td class="c">${mc(qC)}</td>
+      <td class="r"><strong>${vT ? fmtMoney(vT) : '—'}</strong></td>
+      <td>${respPill(r.respostas)}</td>
+    </tr>`;
+  }).join('');
+}
+
+// ─── SLIDE 4: FINANCEIRO ───
+function renderFinanceiro(records, today) {
+  const and   = records.filter(r => (r.status||'').toLowerCase() === 'em andamento');
+  const prev  = records.filter(r => (r.status||'').toLowerCase() === 'previsão');
+  const vAnd  = and.reduce((s,r)=>s+num(r.valor),0);
+  const vPrev = prev.reduce((s,r)=>s+num(r.valor),0);
+  const vTot  = vAnd + vPrev;
+
+  document.getElementById('fin-badge').textContent = fmtMoneyK(vTot);
+  document.getElementById('fin-kpis').innerHTML = `
+    <div class="kpi-card c-green">
+      <div class="kpi-lbl">Em Andamento</div>
+      <div class="kpi-val c-green sm">${fmtMoneyK(vAnd)}</div>
+      <div class="kpi-sub">${and.length} projetos ativos</div>
+    </div>
+    <div class="kpi-card c-yellow">
+      <div class="kpi-lbl">Previsão / Pipeline</div>
+      <div class="kpi-val c-yellow sm">${fmtMoneyK(vPrev)}</div>
+      <div class="kpi-sub">${prev.length} projetos previstos</div>
+    </div>
+    <div class="kpi-card c-blue">
+      <div class="kpi-lbl">Total da Carteira</div>
+      <div class="kpi-val c-blue sm">${fmtMoneyK(vTot)}</div>
+      <div class="kpi-sub">${records.length} projetos no total</div>
+    </div>`;
+
+  const top = [...records].sort((a,b) => num(b.valor)-num(a.valor)).slice(0,10);
+  document.getElementById('fin-tbody').innerHTML = top.map((r,i) => {
+    const client = r.fantasia || r.cliente || '—';
+    return `<tr>
+      <td style="color:var(--muted);font-weight:700;">${i+1}</td>
+      <td><strong>${esc(trunc(client,28))}</strong></td>
+      <td style="color:var(--muted);font-size:11px;">${esc(trunc(r.produto,34))}</td>
+      <td style="color:var(--muted);">${esc(shortGestor(r.gestor))}</td>
+      <td>${statusPill(r.status)}</td>
+      <td class="r"><strong style="color:var(--green);">${fmtMoney(num(r.valor))}</strong></td>
+    </tr>`;
+  }).join('');
+
+  // Gestores by value
+  const gv = rankBy(records, r => shortGestor(r.gestor), r => num(r.valor), 4);
+  const gMax = gv[0]?.value || 1;
+  document.getElementById('fin-gestores').innerHTML = gv.map(({label,value}) => `
+    <div style="margin-bottom:3px;">
+      <div class="bar-item-row">
+        <span class="bar-name">${esc(label)}</span>
+        <span class="bar-val">${fmtMoneyK(value)}</span>
       </div>
-    `).join('');
-  }
-  document.getElementById('gpBars').innerHTML = barHtml(gps, v => `${fmtInt(v)} proj.`, 'Gestores com mais projetos');
-  document.getElementById('ufBars').innerHTML = barHtml(ufs, v => fmtMoney1(v), 'UF com maior volume financeiro de materiais');
-  document.getElementById('productBars').innerHTML = barHtml(prods, v => `${fmtInt(v)} proj.`, 'Produtos com mais projetos');
-}
-function parseSessions(raw) {
-  if (!raw) return [];
-  return raw.split(/[;\n]/).map(s => s.trim()).filter(Boolean);
-}
-function renderTreinamentosSlide(records, today) {
-  const previsao = prioritySort(records.filter(r => (r.Status || '').toLowerCase() === 'previsão'), today);
-  const hero = previsao.find(r => {
-    const w = windowInfo(r, today);
-    return w.type === 'start_future' || w.type === 'start_today';
-  }) || previsao[0];
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(value/gMax*100)}%;background:var(--green);"></div></div>
+    </div>`).join('');
 
-  if (hero) {
-    const w = windowInfo(hero, today);
-    const sessions = parseSessions(hero['Data Real']);
-    const sessionsHtml = sessions.length
-      ? `<div class="sess-lbl" style="margin-top:4px;">Sessões previstas</div>
-         <div style="margin-top:6px;">${sessions.map(s => `<span class="session-tag">${esc(s)}</span>`).join('')}</div>`
-      : '<div class="sess-lbl" style="margin-top:8px;">Data real não informada</div>';
-    const alertCls = w.type === 'start_overdue' ? 'danger' : w.days <= 7 ? 'warn' : 'ok';
-    document.getElementById('treinHero').innerHTML = `
-      <div class="eyebrow">${w.type === 'start_overdue' ? 'alerta · início vencido' : 'próximo treinamento'}</div>
-      <div class="dias">${w.days}<small>${w.type === 'start_overdue' ? 'dias de atraso' : w.days === 0 ? 'começa hoje' : 'dias para iniciar'}</small></div>
-      <div class="cli">${esc(hero.Cliente || '-')}</div>
-      <div class="prod">${esc(hero.Produto || '-')}</div>
-      <div class="meta" style="margin-top:10px;">
-        <span class="tag ${alertCls}">Início · ${longDate(w.date)}</span>
-        <span class="tag">${esc(hero.UF || '-')} · ${esc(hero.Municipio || '-')}</span>
-        ${hero.Instrutor ? `<span class="tag">Instrutor: ${esc(hero.Instrutor)}</span>` : ''}
-        <span class="tag">Livros ${fmtInt(hero['Quantidade Livro'])} · Kits ${fmtInt(hero['Quantidade Kits'])}</span>
+  // UFs by value
+  const uv = rankBy(records, r => r.uf, r => num(r.valor), 5);
+  const uMax = uv[0]?.value || 1;
+  document.getElementById('fin-ufs').innerHTML = uv.map(({label,value}) => `
+    <div style="margin-bottom:3px;">
+      <div class="bar-item-row">
+        <span class="bar-name">${esc(label)}</span>
+        <span class="bar-val">${fmtMoneyK(value)}</span>
       </div>
-      ${sessionsHtml}`;
-  } else {
-    document.getElementById('treinHero').innerHTML = '<div class="cli">Sem treinamentos em previsão.</div>';
-  }
-
-  document.getElementById('treinList').innerHTML = previsao.slice(0, 8).map(r => {
-    const w = windowInfo(r, today);
-    const badgeClass = w.type === 'start_overdue' ? 'overdue' : w.days <= 7 ? 'soon' : 'future';
-    const badgeText  = w.type === 'start_overdue' ? `${w.days}d atraso` : w.days === 0 ? 'hoje' : `${w.days}d`;
-    const sessions   = parseSessions(r['Data Real']);
-    return `
-      <div class="mini-alert">
-        <div class="top">
-          <div>
-            <strong>${esc(r.Cliente || '-')}</strong>
-            <div class="small">${esc(r.Produto || '-')}</div>
-          </div>
-          <div class="badge ${badgeClass}">${badgeText}</div>
-        </div>
-        <div class="small mono">${esc(r.Proposta || '-')} · ${esc(r.UF || '-')}</div>
-        <div class="small">Início ${longDate(w.date)} · ${r.Instrutor ? 'Instr.: ' + esc(r.Instrutor) : 'Sem instrutor'}</div>
-        ${sessions.length ? `<div style="margin-top:5px;">${sessions.map(s => `<span class="session-tag">${esc(s)}</span>`).join('')}</div>` : ''}
-      </div>`;
-  }).join('') || '<div class="mini-alert"><strong>Sem previsão de treinamentos.</strong></div>';
+      <div class="bar-track"><div class="bar-fill" style="width:${Math.round(value/uMax*100)}%;background:var(--blue);"></div></div>
+    </div>`).join('');
 }
-function renderAll(data, modeText) {
-  const records = (data.records || []).map(r => ({...r}));
+
+// ─── MAIN RENDER ───
+function renderAll(data) {
   const today = spToday();
-  document.getElementById('modeBadge').textContent = modeText;
-  document.getElementById('fileInfo').textContent = `${data.source_file || '-'} · ${data.source_sheet || '-'}`;
-  document.getElementById('generatedAt').textContent = `Base extraída em ${new Date(data.generated_at).toLocaleString('pt-BR')}`;
-  renderStartSlide(records, today);
-  renderTreinamentosSlide(records, today);
-  renderAgendaSlide(records, today);
-  renderMaterialsSlide(records, today);
-  renderExecSlide(records, today);
+  const raw = data.records || [];
+  // Normalize all records to unified format
+  const records = raw.map(norm);
+  renderOverview(records, today);
+  renderAndamento(records, today);
+  renderPrevisao(records, today);
+  renderMateriais(records, today);
+  renderFinanceiro(records, today);
 }
+
+// ─── DATA LOADING ───
 async function loadData() {
   try {
-    const res = await fetch(`dashboard_tv_data.json?ts=${Date.now()}`, { cache:'no-store' });
-    if (!res.ok) throw new Error('http ' + res.status);
-    const data = await res.json();
+    const res = await fetch(`dashboard_tv_data.json?ts=${Date.now()}`, { cache: 'no-store' });
+    if (!res.ok) throw new Error('HTTP ' + res.status);
+    // Handle NaN values in JSON (invalid JSON from some exporters)
+    const text = (await res.text()).replace(/:\s*NaN/g, ': null');
+    const data = JSON.parse(text);
     lastGoodData = data;
     lastFetchTime = Date.now();
-    renderAll(data, 'Modo dinâmico · JSON atualizado');
-  } catch (e) {
-    renderAll(lastGoodData, lastFetchTime ? 'Modo dinâmico · usando cache local' : 'Modo estático · fallback embutido');
+    const el = document.getElementById('statusText');
+    if (el) el.textContent = 'Ao Vivo';
+    renderAll(data);
+  } catch(e) {
+    const el = document.getElementById('statusText');
+    if (el) el.textContent = lastFetchTime ? 'Cache Local' : 'Fallback';
+    if (lastGoodData) renderAll(lastGoodData);
+    else if (typeof EMBEDDED_DATA !== 'undefined') renderAll(EMBEDDED_DATA);
   }
   updateLastUpdate();
 }
+
 function updateLastUpdate() {
   const el = document.getElementById('lastUpdate');
   if (!el) return;
-  if (!lastFetchTime) { el.textContent = 'Base embutida'; return; }
+  if (!lastFetchTime) { el.textContent = 'Dados embutidos'; return; }
   const mins = Math.floor((Date.now() - lastFetchTime) / 60000);
-  if (mins < 1) el.textContent = 'Atualizado agora';
-  else if (mins === 1) el.textContent = 'Atualizado há 1 min';
-  else el.textContent = `Atualizado há ${mins} min`;
+  el.textContent = mins < 1 ? 'Atualizado agora' : `Atualizado há ${mins} min`;
 }
+
+// ─── CLOCK ───
 function updateClock() {
-  document.getElementById('clockNow').textContent = new Date().toLocaleString('pt-BR', {
-    timeZone:'America/Sao_Paulo',
-    day:'2-digit', month:'2-digit', year:'numeric',
-    hour:'2-digit', minute:'2-digit', second:'2-digit'
-  });
+  const now = new Date();
+  const sp = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    hour: '2-digit', minute: '2-digit', second: '2-digit'
+  }).format(now);
+  const dt = new Intl.DateTimeFormat('pt-BR', {
+    timeZone: 'America/Sao_Paulo',
+    weekday: 'short', day: '2-digit', month: '2-digit', year: 'numeric'
+  }).format(now);
+  const clockEl = document.getElementById('clock');
+  const dateEl  = document.getElementById('clockDate');
+  if (clockEl) clockEl.textContent = sp;
+  if (dateEl)  dateEl.textContent  = dt.charAt(0).toUpperCase() + dt.slice(1);
 }
-function setSlide(index) {
+
+// ─── NAVIGATION ───
+function setSlide(idx) {
   const slides = [...document.querySelectorAll('.slide')];
-  const dots = [...document.querySelectorAll('.dots button')];
-  currentSlide = (index + slides.length) % slides.length;
-  slides.forEach((s, i) => s.classList.toggle('active', i === currentSlide));
-  dots.forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+  const dots   = [...document.querySelectorAll('.nav-dot')];
+  currentSlide = ((idx % slides.length) + slides.length) % slides.length;
+  slides.forEach((s,i) => s.classList.toggle('active', i === currentSlide));
+  dots.forEach((d,i)   => d.classList.toggle('active', i === currentSlide));
+  const lbl = document.getElementById('slideLabel');
+  if (lbl) lbl.textContent = SLIDE_NAMES[currentSlide] || '';
+  const ctr = document.getElementById('slideCtr');
+  if (ctr) ctr.textContent = `${currentSlide+1} / ${slides.length}`;
   lastSwitch = Date.now();
 }
-function initDots() {
+
+function buildNav() {
   const slides = [...document.querySelectorAll('.slide')];
-  const wrap = document.getElementById('dots');
-  wrap.innerHTML = slides.map((_, i) => `<button aria-label="slide ${i+1}"></button>`).join('');
-  [...wrap.querySelectorAll('button')].forEach((btn, i) => btn.addEventListener('click', () => setSlide(i)));
-  setSlide(0);
+  const wrap   = document.getElementById('navDots');
+  wrap.innerHTML = slides.map((_,i) =>
+    `<button class="nav-dot${i===0?' active':''}" onclick="setSlide(${i})" aria-label="${SLIDE_NAMES[i]}"></button>`
+  ).join('');
 }
+
 function tickProgress() {
   const fill = document.getElementById('progressFill');
-  const elapsed = Date.now() - lastSwitch;
-  const p = Math.min(100, (elapsed / SLIDE_MS) * 100);
-  fill.style.width = p + '%';
-  if (elapsed >= SLIDE_MS) setSlide(currentSlide + 1);
+  if (fill) {
+    const p = Math.min(100, (Date.now()-lastSwitch)/SLIDE_MS*100);
+    fill.style.width = p + '%';
+    if (Date.now()-lastSwitch >= SLIDE_MS) setSlide(currentSlide+1);
+  }
   requestAnimationFrame(tickProgress);
 }
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'ArrowRight') setSlide(currentSlide + 1);
-  if (e.key === 'ArrowLeft') setSlide(currentSlide - 1);
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'ArrowRight') setSlide(currentSlide+1);
+  if (e.key === 'ArrowLeft')  setSlide(currentSlide-1);
 });
-initDots();
+
+// ─── BOOT ───
+buildNav();
 tickProgress();
-loadData();
 updateClock();
-setInterval(updateClock, 1000);
-setInterval(loadData, 20000);
+setInterval(updateClock,    1000);
+setInterval(loadData,       20000);
 setInterval(updateLastUpdate, 30000);
-// Reinício completo a cada 6 horas para evitar memory leak em exibição 24/7
+// Reinício a cada 6h para TV 24/7 (evita memory leak)
 setTimeout(() => location.reload(), 6 * 60 * 60 * 1000);
+loadData();
 </script>
 </body>
 </html>
